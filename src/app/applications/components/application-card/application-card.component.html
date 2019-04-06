@@ -1,7 +1,8 @@
 <nz-card [nzCover]="coverTemplate" [nzBordered]="false">
-  <p>{{ application.name }}</p>
-  <p>Card content</p>
-  <p>Card content</p>
+  <h2 class="card-title">{{ application.name }}</h2>
+  <div class="card-footer">
+    <span class="updated-date"><span class="updated-date-label">LAST UPDATE: </span> <span class="updated-date-value">{{ application.updatedAt | date:'dd/MM/yy hh:mm' }}</span></span>
+  </div>
 </nz-card>
 
 <ng-template #coverTemplate>
