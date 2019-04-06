@@ -7,6 +7,8 @@ import { ErrorUnauthenticatedComponent } from './containers/errors/error-unauthe
 import { ErrorUnauthorizedComponent } from './containers/errors/error-unauthorized/error-unauthorized.component';
 import { ErrorNotFoundComponent } from './containers/errors/error-not-found/error-not-found.component';
 import { RouterModule } from '@angular/router';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -18,16 +20,18 @@ import { RouterModule } from '@angular/router';
     ErrorNotFoundComponent
   ],
   imports: [
+    NgZorroAntdModule,
     CommonModule,
+    SharedModule,
 
     RouterModule.forRoot([
       {
         path: '',
         component: LayoutComponent,
         children: [
-          // { path: 'home', component: HomeComponent },
-          // { path: 'redirect/callback', component: CallbackComponent},
           { path: '', redirectTo: 'applications', pathMatch: 'full' },
+
+          { path: 'applications', loadChildren: '../applications/applications.module#ApplicationsModule' },
         ]
       },
 
