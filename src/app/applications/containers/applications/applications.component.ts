@@ -12,4 +12,8 @@ export class ApplicationsComponent implements OnInit {
   ngOnInit() {
   }
 
+  onBack() {
+    alert('where do you think you\'re going? Back to work!')
+  }
+
 }
