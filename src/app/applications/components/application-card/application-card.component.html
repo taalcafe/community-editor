@@ -1,4 +1,4 @@
-<nz-card [nzCover]="coverTemplate" [nzBordered]="false">
+<nz-card [nzCover]="coverTemplate" [nzBordered]="false" (click)="goToTranslationFiles()">
   <h2 class="card-title">{{ application.name }}</h2>
   <div class="card-footer">
     <span class="updated-date"><span class="updated-date-label">LAST UPDATE: </span> <span class="updated-date-value">{{ application.updatedAt | date:'dd/MM/yy hh:mm' }}</span></span>
