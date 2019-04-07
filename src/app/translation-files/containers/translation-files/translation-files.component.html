@@ -9,7 +9,7 @@
   <nz-card [nzBordered]="false">
     <div nz-row nzType="flex" nzJustify="space-between">
       <h2 class="card-title">Version 1.0.10 - Latest</h2>
-      <button nz-button nzType="primary"><i nz-icon type="edit"></i>Continue Editing</button>
+      <button (click)="edit()" nz-button nzType="primary"><i nz-icon type="edit"></i>Continue Editing</button>
     </div>
     <div class="card-footer">
       <span class="updated-date"><span class="updated-date-label">LAST UPDATE: </span> <span class="updated-date-value">{{ '2019-04-06T22:36:40.937Z' | date:'dd/MM/yy hh:mm' }}</span></span>

@@ -33,7 +33,7 @@ import { SharedModule } from '../shared/shared.module';
 
           { path: 'applications', loadChildren: '../applications/applications.module#ApplicationsModule' },
           { path: 'translation-files', loadChildren: '../translation-files/translation-files.module#TranslationFilesModule' },
-
+          { path: 'translations', loadChildren: '../translations/translations.module#TranslationsModule' },
         ]
       },
 

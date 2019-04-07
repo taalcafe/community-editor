@@ -10,6 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class TranslationFilesComponent implements OnInit {
 
+  translationFile: any = { id: '2' };
   initLoading = true; // bug
   loadingMore = false;
   data: any[] = [];
@@ -44,8 +45,9 @@ export class TranslationFilesComponent implements OnInit {
     });
   }
 
-  edit(item: any): void {
-    this.msg.success(item.email);
+  edit(): void {
+    // this.msg.success(item.email);
+    this.router.navigate(['translations', this.translationFile.id]);
   }
 
   onBack() {
