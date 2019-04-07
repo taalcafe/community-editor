@@ -12,7 +12,7 @@ import en from '@angular/common/locales/en';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { DownloadOutline, FileTextOutline, EditOutline } from '@ant-design/icons-angular/icons';
+import { DownloadOutline, FileTextOutline, EditOutline, MessageOutline, ProfileOutline, BellOutline, FlagOutline } from '@ant-design/icons-angular/icons';
 registerLocaleData(en);
 
 
@@ -20,7 +20,11 @@ registerLocaleData(en);
 const icons: IconDefinition[] = [
   EditOutline,
   DownloadOutline,
-  FileTextOutline
+  FileTextOutline,
+  MessageOutline,
+  ProfileOutline,
+  BellOutline,
+  FlagOutline
 ];
 @NgModule({
   declarations: [
