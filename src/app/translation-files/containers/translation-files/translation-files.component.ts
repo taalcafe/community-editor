@@ -24,8 +24,8 @@ export class TranslationFilesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData((res: any) => {
-      this.data = res.results;
-      this.list = res.results;
+      this.data = res.results.map((_, i) => { _.index = i; return _});;
+      this.list = res.results.map((_, i) => { _.index = i; return _});;
       this.initLoading = false;
     });
   }
@@ -38,7 +38,7 @@ export class TranslationFilesComponent implements OnInit {
     this.loadingMore = true;
     this.list = this.data.concat([...Array(this.count)].fill({}).map(() => ({ loading: true, name: {} })));
     this.http.get(this.fakeDataUrl).subscribe((res: any) => {
-      this.data = this.data.concat(res.results);
+      this.data = this.data.concat(res.results).map((_, i) => { _.index = i; return _});
       this.list = [...this.data];
       this.loadingMore = false;
     });

@@ -12,12 +12,13 @@ import en from '@angular/common/locales/en';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { DownloadOutline, FileTextOutline } from '@ant-design/icons-angular/icons';
+import { DownloadOutline, FileTextOutline, EditOutline } from '@ant-design/icons-angular/icons';
 registerLocaleData(en);
 
 
 // Every Icon you use should be imported individually to keep the bundle size low
 const icons: IconDefinition[] = [
+  EditOutline,
   DownloadOutline,
   FileTextOutline
 ];
