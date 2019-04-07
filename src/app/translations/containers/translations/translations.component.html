@@ -5,6 +5,13 @@
       nzTitle="Translations"
       nzSubtitle="for Application Name - Version 1.0.10">
     </nz-page-header>
+    <div nz-row>
+      <div nz-col nzLg="6"></div>
+      <div nz-col nzLg="12" style="display: flex; justify-content: center;">
+        <app-translation-edit style="width: 100%;"></app-translation-edit>
+      </div>
+      <div nz-col nzLg="6"></div>
+    </div>
 </div>
 
 <nz-footer>
@@ -36,6 +43,20 @@
         </nz-comment>
       </ng-template>
     </nz-list>
+
+    <form nz-form style="padding-top: 20px; border-top: 1px solid #e8e8e8;">
+      <nz-form-item style="margin-bottom: 0px;">
+        <nz-form-control>
+          <textarea nz-input rows="2" placeholder="Add a comment"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item style="margin-bottom: 0px;">
+        <nz-form-control style="display: flex; justify-content: space-around;">
+          <button nz-button type="button" style="margin: 0 5px;">Cancel</button>
+          <button nz-button nzType="primary" type="button" style="margin: 0 5px;">Comment</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
 </nz-drawer>
 
 
