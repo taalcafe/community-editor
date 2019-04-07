@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-translation-files',
@@ -8,9 +10,42 @@ import { Router } from '@angular/router';
 })
 export class TranslationFilesComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  initLoading = true; // bug
+  loadingMore = false;
+  data: any[] = [];
+  list: Array<{ loading: boolean; name: any }> = [];
 
-  ngOnInit() {
+  count = 5;
+  fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
+
+
+  constructor(private router: Router, private http: HttpClient, private msg: NzMessageService) { }
+
+
+  ngOnInit(): void {
+    this.getData((res: any) => {
+      this.data = res.results;
+      this.list = res.results;
+      this.initLoading = false;
+    });
+  }
+
+  getData(callback: (res: any) => void): void {
+    this.http.get(this.fakeDataUrl).subscribe((res: any) => callback(res));
+  }
+
+  onLoadMore(): void {
+    this.loadingMore = true;
+    this.list = this.data.concat([...Array(this.count)].fill({}).map(() => ({ loading: true, name: {} })));
+    this.http.get(this.fakeDataUrl).subscribe((res: any) => {
+      this.data = this.data.concat(res.results);
+      this.list = [...this.data];
+      this.loadingMore = false;
+    });
+  }
+
+  edit(item: any): void {
+    this.msg.success(item.email);
   }
 
   onBack() {
