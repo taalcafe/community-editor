@@ -9,9 +9,43 @@
 
 <nz-footer>
   <ul nz-menu [nzMode]="'horizontal'">
-    <li nz-menu-item><i nz-icon nzType="message" nzTheme="outline"></i> Comments</li>
-    <li nz-menu-item><i nz-icon nzType="profile" nzTheme="outline"></i> Notes</li>
-    <li nz-menu-item><i nz-icon nzType="flag" nzTheme="outline"></i> Flag</li>
-    <li nz-menu-item><i nz-icon nzType="bell" nzTheme="outline"></i> Postpone</li>
+    <li nz-menu-item (click)="openComments()"><i nz-icon nzType="message" nzTheme="outline"></i> Comments</li>
+    <li nz-menu-item (click)="openNotes()"><i nz-icon nzType="profile" nzTheme="outline"></i> Notes</li>
+    <li nz-menu-item (click)="flag()"><i nz-icon nzType="flag" nzTheme="outline"></i> Flag</li>
+    <li nz-menu-item (click)="postpone()"><i nz-icon nzType="bell" nzTheme="outline"></i> Postpone</li>
   </ul>
 </nz-footer>
+
+
+
+<nz-drawer
+  [nzWidth]="330"
+  [nzClosable]="true"
+  [nzVisible]="showComments"
+  [nzPlacement]="'right'"
+  nzTitle="Comments"
+  (nzOnClose)="closeComments()">
+    <nz-list [nzDataSource]="comments" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+      <ng-template #item let-item>
+        <nz-comment [nzAuthor]="item.author" [nzDatetime]="'1 day ago'">
+          <nz-avatar nz-comment-avatar nzIcon="user" [nzSrc]="item.avatar"></nz-avatar>
+          <nz-comment-content>
+            <p>{{ item.content }}</p>
+          </nz-comment-content>
+          <nz-comment-action>Reply to</nz-comment-action>
+        </nz-comment>
+      </ng-template>
+    </nz-list>
+</nz-drawer>
+
+
+<nz-drawer
+  [nzClosable]="true"
+  [nzVisible]="showNotes"
+  [nzPlacement]="'bottom'"
+  nzTitle="Notes"
+  (nzOnClose)="closeNotes()">
+  <p>Some contents...</p>
+  <p>Some contents...</p>
+  <p>Some contents...</p>
+</nz-drawer>
