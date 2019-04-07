@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-translations',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TranslationsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
+  }
+
+  onBack() {
+    this.router.navigate(['translation-files', 1]);
   }
 
 }
