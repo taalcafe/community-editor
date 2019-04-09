@@ -13,6 +13,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { DownloadOutline, FileTextOutline, EditOutline, MessageOutline, ProfileOutline, BellOutline, FlagOutline } from '@ant-design/icons-angular/icons';
+import { GraphQLModule } from './graphql.module';
 registerLocaleData(en);
 
 
@@ -39,7 +40,8 @@ const icons: IconDefinition[] = [
     BrowserAnimationsModule,
 
     CoreModule,
-    SharedModule
+    SharedModule,
+    GraphQLModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
