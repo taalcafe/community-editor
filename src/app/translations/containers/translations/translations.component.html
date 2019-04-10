@@ -4,17 +4,20 @@
       nzBackIcon
       nzTitle="Translations"
       nzSubtitle="for Application Name - Version 1.0.10">
+      <nz-page-header-content>
+        <nz-radio-group  nzSize="small" style="float: right; margin-top: -36px;" [(ngModel)]="view" name="view" [nzButtonStyle]="'solid'">
+          <label nz-radio-button nzValue="table"><i nz-icon nzType="table" nzTheme="outline"></i></label>
+          <label nz-radio-button nzValue="modern"><i nz-icon nzType="bars" nzTheme="outline"></i></label>
+        </nz-radio-group>
+      </nz-page-header-content>
     </nz-page-header>
-    <div nz-row>
-      <div nz-col nzLg="6"></div>
-      <div nz-col nzLg="12" style="display: flex; justify-content: center;">
-        <app-translation-edit style="width: 100%;"></app-translation-edit>
-      </div>
-      <div nz-col nzLg="6"></div>
-    </div>
+    <ng-container [ngSwitch]="view">
+      <app-translations-table *ngSwitchCase="'table'"></app-translations-table>
+      <app-translations-modern *ngSwitchCase="'modern'"></app-translations-modern>
+    </ng-container>
 </div>
 
-<nz-footer>
+<nz-footer *ngIf="view === 'modern'">
   <ul nz-menu [nzMode]="'horizontal'">
     <li nz-menu-item (click)="openComments()"><i nz-icon nzType="message" nzTheme="outline"></i> Comments</li>
     <li nz-menu-item (click)="openNotes()"><i nz-icon nzType="profile" nzTheme="outline"></i> Notes</li>
@@ -22,8 +25,6 @@
     <li nz-menu-item (click)="postpone()"><i nz-icon nzType="bell" nzTheme="outline"></i> Postpone</li>
   </ul>
 </nz-footer>
-
-
 
 <nz-drawer
   [nzWidth]="330"
@@ -58,7 +59,6 @@
       </nz-form-item>
     </form>
 </nz-drawer>
-
 
 <nz-drawer
   [nzClosable]="true"

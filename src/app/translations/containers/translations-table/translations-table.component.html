@@ -1,0 +1,43 @@
+<nz-table #editRowTable nzBordered [nzData]="listOfData" nzSize="small">
+  <thead>
+    <tr>
+      <th nzWidth="25%">Key</th>
+      <th nzWidth="15%">Default</th>
+      <th nzWidth="40%">German</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of editRowTable.data">
+      <td>
+        <ng-container>
+          {{ data.key }}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{ data.default }}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container *ngIf="!editCache[data.id].edit; else translationInputTpl">
+          {{ data.translation }}
+        </ng-container>
+        <ng-template #translationInputTpl>
+          <input type="text" nz-input [(ngModel)]="editCache[data.id].data.translation" />
+        </ng-template>
+      </td>
+      <td>
+        <div class="editable-row-operations">
+          <ng-container *ngIf="!editCache[data.id].edit; else saveTpl">
+            <a (click)="startEdit(data.id)">Edit</a>
+          </ng-container>
+          <ng-template #saveTpl>
+            <a (click)="saveEdit(data.id)">Save</a>
+            <a nz-popconfirm nzTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+          </ng-template>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

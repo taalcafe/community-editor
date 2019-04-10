@@ -10,6 +10,7 @@ export class TranslationsComponent implements OnInit {
 
   showComments: boolean;
   showNotes: boolean;
+  view: string = 'table';
 
   comments = [
     {
