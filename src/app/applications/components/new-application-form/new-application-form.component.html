@@ -1,3 +1,18 @@
-<p>
-  new-application-form works!
-</p>
+<form nz-form
+  nzLayout="vertical"
+  [formGroup]="form"
+  (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-label>Application Name</nz-form-label>
+    <nz-form-control>
+      <input nz-input nzSize="large" formControlName="name" />
+      <nz-form-explain *ngIf="form.get('name')?.dirty && form.get('name')?.errors">Please provide a name for the application!</nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item style="margin-bottom: 0px;">
+    <nz-form-control style="float: right;">
+      <button type="button" (click)="onCancel()" nz-button nzType="default">Cancel</button>
+      <button style="margin-left: 10px;" type="submit" nz-button nzType="primary">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-new-application-card',
@@ -7,13 +7,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewApplicationCardComponent implements OnInit {
 
+  showModal: boolean = false;
+  ok: EventEmitter<any> = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {
   }
 
   openModal() {
-    
+    this.showModal = true;
+  }
+
+  handleOk(event: any) {
+    this.ok.emit(event);
+  }
+
+  handleCancel() {
+    this.showModal = false;
   }
 
 }

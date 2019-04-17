@@ -6,12 +6,15 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { ApplicationCardComponent } from './components/application-card/application-card.component';
 import { NewApplicationCardComponent } from './components/new-application-card/new-application-card.component';
 import { NewApplicationFormComponent } from './components/new-application-form/new-application-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ApplicationsComponent, ApplicationCardComponent, NewApplicationCardComponent, NewApplicationFormComponent],
   imports: [
     CommonModule,
     NgZorroAntdModule,
+    FormsModule,
+    ReactiveFormsModule,
 
     RouterModule.forChild([
       {

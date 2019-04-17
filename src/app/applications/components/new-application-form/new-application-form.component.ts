@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-application-form',
@@ -7,9 +8,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewApplicationFormComponent implements OnInit {
 
-  constructor() { }
+  form = this.fb.group({
+    name: [null, [Validators.required]]
+  });
+
+  ok: EventEmitter<any> = new EventEmitter();
+  cancel: EventEmitter<void> = new EventEmitter();
+
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+  }
+
+  submitForm(): void {
+    for (const i in this.form.controls) {
+      this.form.controls[i].markAsDirty();
+      this.form.controls[i].updateValueAndValidity();
+    }
+
+    if(this.form.valid) this.ok.emit(this.form.value);
+  }
+
+  onCancel() {
+    this.cancel.emit();
   }
 
 }

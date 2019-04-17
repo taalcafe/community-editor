@@ -6,3 +6,12 @@
   <i nz-icon nzType="plus" nzTheme="outline"></i>
   <!-- <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" /> -->
 </ng-template>
+
+<nz-modal
+  [(nzVisible)]="showModal"
+  nzTitle="Create Application"
+  [nzFooter]="null">
+  <app-new-application-form
+  (cancel)="handleCancel()"
+  (ok)="handleOk()"></app-new-application-form>
+</nz-modal>

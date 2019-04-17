@@ -39,4 +39,8 @@ export class ApplicationsComponent implements OnInit {
     alert('where do you think you\'re going? Back to work!')
   }
 
+  onNewApplication(event: any) {
+    debugger;
+  }
+
 }
