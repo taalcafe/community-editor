@@ -10,8 +10,11 @@
 <nz-modal
   [(nzVisible)]="showModal"
   nzTitle="Create Application"
-  [nzFooter]="null">
+  [nzFooter]="null" (nzOnCancel)="handleCancel()">
   <app-new-application-form
-  (cancel)="handleCancel()"
-  (ok)="handleOk()"></app-new-application-form>
+    *ngIf="showModal"
+    [pending]="pending"
+    [error]="error"
+    (cancel)="handleCancel()"
+    (ok)="handleOk($event)"></app-new-application-form>
 </nz-modal>

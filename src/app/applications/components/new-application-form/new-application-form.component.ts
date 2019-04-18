@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -8,12 +8,15 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class NewApplicationFormComponent implements OnInit {
 
+  @Input() pending: boolean;
+  @Input() error: string;
+
+  @Output() ok: EventEmitter<any> = new EventEmitter();
+  @Output() cancel: EventEmitter<void> = new EventEmitter();
+    
   form = this.fb.group({
     name: [null, [Validators.required]]
   });
-
-  ok: EventEmitter<any> = new EventEmitter();
-  cancel: EventEmitter<void> = new EventEmitter();
 
   constructor(private fb: FormBuilder) { }
 

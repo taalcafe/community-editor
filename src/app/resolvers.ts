@@ -2,28 +2,28 @@ import gql from 'graphql-tag';
 
 export const resolvers = {
     Mutation: {
-        toggleTodo: (_, variables, {cache, getCacheKey}) => {
-            const id = getCacheKey({__typename: 'TodoItem', id: variables.id});
-            const fragment = gql`
-                fragment completeTodo on TodoItem {
-                    completed
-                }
-            `;
-            const todo = cache.readFragment({fragment, id});
-            const data = {...todo, completed: !todo.completed};
-            cache.writeData({id, data});
-            return null;
-        }
+
     },
 };
 
 export const typeDefs = `
 
   type Mutation {
-    
+    addApp(name: String!): Application!
+    addLanguage(appId: ID!, languageId: ID!): Language!
   }
 
   type Query {
-    
+    apps: [Application!]!
+    addApp(name: String!): Application!
+    languages(appId: ID!): [Language!]!
+  }
+
+  extend type Application {
+    id: ID!
+    createdAt: String!
+    updatedAt: String!
+  
+    name: String!
   }
 `;

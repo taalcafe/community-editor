@@ -1,3 +1,18 @@
+# Apollo
+
+## Generage Schema
+
+npx apollo-codegen introspect-schema http://localhost:8080/graphql --output ./src/app/types/schema.json
+
+
+
+npx apollo-codegen generate ./src/app/types/**/*.ts --schema ./src/app/types/schema.json --target typescript --output ./src/app/types/operation-result-types.ts
+
+## Generate Typescript Schema
+
+
+
+
 # Client
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
