@@ -45,10 +45,15 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
         order: i
       }
 
-      let processedParts: ITaalMessagePart[] = null;
-      processedParts = normalized.parts().map(p => toTaalPart(p));
+      let processedSourceParts: ITaalMessagePart[] = null;
+      processedSourceParts = normalized.parts().map(p => toTaalPart(p));
 
-      translation.parts = processedParts;
+      let processedTargetParts: ITaalMessagePart[] = null;
+      processedTargetParts = normalized.parts().map(p => toTaalPart(p));
+
+      translation.parts = processedSourceParts;
+      translation.sourceParts = processedSourceParts;
+      translation.targetParts = processedTargetParts;
       translation.icuExpressions = [];
       normalizedTUs.push(translation);
     }

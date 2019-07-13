@@ -79,8 +79,8 @@ export class TranslationsComponent implements OnInit {
     this.showNotes = false;
   }
 
-  saveTranslation({index, target}) {
-    this.store.dispatch(new UpdateTranslation(index, target));
+  saveTranslation(event: any) {
+    this.store.dispatch(new UpdateTranslation(event.index, event.target));
   }
 
 }

@@ -47,7 +47,11 @@ export class TranslationsTableComponent implements OnInit {
   }
 
   getSource(translations: Translation) {
-    return translations.parts.map(_ => _.value).join('');
+    return translations.sourceParts.map(_ => _.value).join('');
+  }
+
+  getTarget(translations: Translation) {
+    return translations.targetParts.map(_ => _.value).join('');
   }
 
 }

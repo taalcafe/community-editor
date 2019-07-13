@@ -20,7 +20,7 @@
       </td>
       <td (click)="startEdit(i)">
         <ng-container *ngIf="!editCache[i].edit; else translationInputTpl">
-          {{ data.translation }}
+          {{ getTarget(data) }}
         </ng-container>
         <ng-template #translationInputTpl>
           <div style="display: flex;">
