@@ -23,7 +23,15 @@
           {{ data.translation }}
         </ng-container>
         <ng-template #translationInputTpl>
-          <input type="text" nz-input [(ngModel)]="editCache[i].data.translation" />
+          <div style="display: flex;">
+            <input type="text" nz-input [(ngModel)]="editCache[i].data.translation" />
+            <button
+              style="margin-left: 10px;"
+              nz-button
+              nzType="primary"
+              nzGhost
+              (click)="saveEdit(i)"><i nz-icon type="check"></i></button>
+          </div>
         </ng-template>
       </td>
     </tr>

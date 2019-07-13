@@ -7,6 +7,11 @@ export class LoadTranslations {
     constructor(public translations: Translation[], public fileName: string) {}
 }
 
+export class UpdateTranslation {
+  static readonly type = '[Translations] Update Translation';
+  constructor(public index: number, public target: any) {}
+}
+
 // State Model
 export interface TranslationsStateModel {
     translations: Translation[];
@@ -23,7 +28,14 @@ export interface TranslationsStateModel {
 })
 export class TranslationsState {
     @Action(LoadTranslations)
-    feedZebra({ getState, patchState }, action: LoadTranslations) {
+    loadTranslations({ patchState }, action: LoadTranslations) {
         patchState({ translations: action.translations, fileName: action.fileName })
+    }
+
+    @Action(UpdateTranslation)
+    updateTranslation({ getState, patchState }, action: UpdateTranslation) {
+        let translations = getState().translations;
+        translations[action.index].target = action.target;
+        // patchState({ translations: action.translations, fileName: action.fileName })
     }
 }

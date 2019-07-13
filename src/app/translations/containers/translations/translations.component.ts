@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { Observable } from 'apollo-link';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
+import { UpdateTranslation } from 'src/app/core/state/translations.state';
 
 @Component({
   selector: 'app-translations',
@@ -53,7 +54,7 @@ export class TranslationsComponent implements OnInit {
     }
   ];
 
-  constructor(private router: Router) { }
+  constructor(private store: Store, private router: Router) { }
 
   ngOnInit() {
   }
@@ -76,6 +77,10 @@ export class TranslationsComponent implements OnInit {
 
   closeNotes() {
     this.showNotes = false;
+  }
+
+  saveTranslation({index, target}) {
+    this.store.dispatch(new UpdateTranslation(index, target));
   }
 
 }

@@ -11,7 +11,9 @@
       </nz-page-header-content>
     </nz-page-header>
     <ng-container [ngSwitch]="view">
-      <app-translations-table *ngSwitchCase="'table'" [translations]="translations$ | async"></app-translations-table>
+      <app-translations-table *ngSwitchCase="'table'"
+        [translations]="translations$ | async"
+        (saveTranslation)="saveTranslation(event$)"></app-translations-table>
       <app-translations-modern *ngSwitchCase="'modern'"></app-translations-modern>
     </ng-container>
 </div>
