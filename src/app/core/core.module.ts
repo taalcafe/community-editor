@@ -9,6 +9,8 @@ import { ErrorNotFoundComponent } from './containers/errors/error-not-found/erro
 import { RouterModule } from '@angular/router';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { SharedModule } from '../shared/shared.module';
+import { NgxsModule } from '@ngxs/store';
+import { TranslationsState } from './state/translations.state';
 
 @NgModule({
   declarations: [
@@ -24,13 +26,16 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     SharedModule,
 
+    NgxsModule.forFeature([TranslationsState]),
+
     RouterModule.forRoot([
       {
         path: '',
         component: LayoutComponent,
         children: [
-          { path: '', redirectTo: 'applications', pathMatch: 'full' },
+          { path: '', redirectTo: 'translation-files/upload', pathMatch: 'full' },
 
+          { path: 'translation-files/upload', loadChildren: '../upload-translation-file/upload-translation-file.module#UploadTranslationFileModule' },
           { path: 'applications', loadChildren: '../applications/applications.module#ApplicationsModule' },
           { path: 'translation-files', loadChildren: '../translation-files/translation-files.module#TranslationFilesModule' },
           { path: 'translations', loadChildren: '../translations/translations.module#TranslationsModule' },

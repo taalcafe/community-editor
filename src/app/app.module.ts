@@ -14,6 +14,8 @@ import { SharedModule } from './shared/shared.module';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { DownloadOutline, FileTextOutline, EditOutline, MessageOutline, ProfileOutline, BellOutline, FlagOutline, BarsOutline, TableOutline, PlusOutline } from '@ant-design/icons-angular/icons';
 import { GraphQLModule } from './graphql.module';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 registerLocaleData(en);
 
 
@@ -47,7 +49,10 @@ const icons: IconDefinition[] = [
     GraphQLModule,
 
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
+    NgxsModule.forRoot([]),
+    NgxsLoggerPluginModule.forRoot()
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
