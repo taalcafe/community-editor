@@ -18,7 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
     RouterModule.forChild([
       {
-        path: ':id',
+        path: '',
         component: TranslationsComponent,
         children: [ ]
       }

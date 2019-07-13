@@ -1,4 +1,4 @@
-<nz-table #editRowTable nzBordered [nzData]="listOfData" nzSize="small">
+<nz-table #translationsTable nzBordered [nzData]="translations" nzSize="small">
   <thead>
     <tr>
       <th nzWidth="25%">Key</th>
@@ -7,23 +7,23 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of editRowTable.data">
+    <tr *ngFor="let data of translationsTable.data; let i = index">
       <td>
         <ng-container>
-          {{ data.key }}
+          {{ data.translationId }}
         </ng-container>
       </td>
       <td>
         <ng-container>
-          {{ data.default }}
+          {{ getSource(data) }}
         </ng-container>
       </td>
-      <td (click)="startEdit(data.id)">
-        <ng-container *ngIf="!editCache[data.id].edit; else translationInputTpl">
+      <td (click)="startEdit(i)">
+        <ng-container *ngIf="!editCache[i].edit; else translationInputTpl">
           {{ data.translation }}
         </ng-container>
         <ng-template #translationInputTpl>
-          <input type="text" nz-input [(ngModel)]="editCache[data.id].data.translation" />
+          <input type="text" nz-input [(ngModel)]="editCache[i].data.translation" />
         </ng-template>
       </td>
     </tr>

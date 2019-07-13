@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Translation } from 'src/app/upload-translation-file/models/translation';
+import { Observable } from 'apollo-link';
+import { Select } from '@ngxs/store';
 
 @Component({
   selector: 'app-translations',
@@ -7,6 +10,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./translations.component.less']
 })
 export class TranslationsComponent implements OnInit {
+
+  @Select(state => state.translations.translations)
+  translations$: Observable<Translation[]>;
 
   showComments: boolean;
   showNotes: boolean;
@@ -53,7 +59,7 @@ export class TranslationsComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['translation-files', 1]);
+    this.router.navigate(['']);
   }
 
   openComments() {

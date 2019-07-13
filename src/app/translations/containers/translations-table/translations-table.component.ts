@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Select } from '@ngxs/store';
+import { Translation } from 'src/app/upload-translation-file/models/translation';
+import { Observable } from 'apollo-link';
 
 @Component({
   selector: 'app-translations-table',
@@ -7,30 +10,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TranslationsTableComponent implements OnInit {
 
-  editCache: { [key: string]: any } = {};
-  listOfData: any[] = [];
+  @Input() translations: Translation[];
 
-  startEdit(id: string): void {
-    this.editCache[id].edit = true;
+  editCache: { [key: string]: any } = {};
+
+  startEdit(index: string): void {
+    this.editCache[index].edit = true;
   }
 
-  cancelEdit(id: string): void {
-    const index = this.listOfData.findIndex(item => item.id === id);
-    this.editCache[id] = {
-      data: { ...this.listOfData[index] },
+  cancelEdit(index: string): void {
+    this.editCache[index] = {
+      data: { ...this.translations[index] },
       edit: false
     };
   }
 
-  saveEdit(id: string): void {
-    const index = this.listOfData.findIndex(item => item.id === id);
-    Object.assign(this.listOfData[index], this.editCache[id].data);
-    this.editCache[id].edit = false;
+  saveEdit(index: string): void {
+    Object.assign(this.translations[index], this.editCache[index].data);
+    this.editCache[index].edit = false;
   }
 
   updateEditCache(): void {
-    this.listOfData.forEach(item => {
-      this.editCache[item.id] = {
+    this.translations.forEach((item, i) => {
+      this.editCache[i] = {
         edit: false,
         data: { ...item }
       };
@@ -38,17 +40,11 @@ export class TranslationsTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    for (let i = 0; i < 100; i++) {
-      this.listOfData.push({
-        id: `${i}`,
-        key: `Edrward ${i}`,
-        meaning: `Meaning ${i}`,
-        description: `Description ${i}`,
-        default: `Default text ${i}`,
-        translation: `Translation ${i}`
-      });
-    }
     this.updateEditCache();
+  }
+
+  getSource(translations: Translation) {
+    return translations.parts.map(_ => _.value).join('');
   }
 
 }

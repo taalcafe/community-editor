@@ -5,6 +5,7 @@ import { normalize } from '../../handler/normalizer';
 import { Store } from '@ngxs/store';
 import { LoadTranslations } from 'src/app/core/state/translations.state';
 import { Translation } from '../../models/translation';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload-translation-file',
@@ -15,7 +16,7 @@ export class UploadTranslationFileComponent implements OnInit {
 
   uploading = false;
 
-  constructor(private store: Store) { }
+  constructor(private store: Store, private router: Router) { }
 
   ngOnInit() {
   }
@@ -46,6 +47,7 @@ export class UploadTranslationFileComponent implements OnInit {
 
       const translations: Translation[] = normalize(transUnits);
       this.store.dispatch(new LoadTranslations(translations, item.file.name))
+      this.router.navigate(['translations'])
     }
 
     fileReader.readAsText(<any>item.file);
