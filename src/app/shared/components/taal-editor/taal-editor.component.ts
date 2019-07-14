@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as uuid from 'uuid';
@@ -13,14 +13,16 @@ import * as Slate from 'slate';
 })
 export class TaalEditorComponent implements OnInit {
 
+    @Input() disabled: boolean;
     @Input() index: number;
     @Input() initialValue: TaalTranslation;
     @Output() taalEditorChange: EventEmitter<{value: Slate.Value, index: number }> = new EventEmitter();
 
     private rootDomID: string;
+    @ViewChild('taalEditor') el: ElementRef;
         
     protected getRootDomNode() {
-        const node = document.getElementById(this.rootDomID);
+        const node = this.el.nativeElement;
         invariant(node, `Node '${this.rootDomID} not found!`);
         return node;
     }
@@ -53,9 +55,11 @@ export class TaalEditorComponent implements OnInit {
         this.rootDomID = uuid.v1();
     }
 
-    
+    ngOnChanges() {
+        this.render()
+    }
 
     ngAfterViewInit() {
-        this.render();
+        this.render()
     }
 }

@@ -1,7 +1,20 @@
+@import (reference) '../../../../styles/styles';
+
+nz-table {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
 .editable-row-operations a {
     margin-right: 8px;
 }
 
-.invalidTranslationsMap {
-    background-color: red;
+:host ::ng-deep {
+
+    thead tr:hover > * {
+        background-color: inherit !important;
+    }
+
+    tbody tr:hover > * {
+        background-color: white !important;
+    }
 }

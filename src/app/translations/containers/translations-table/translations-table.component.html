@@ -1,3 +1,4 @@
+
 <nz-table #translationsTable nzBordered [nzData]="translations" nzSize="small">
   <thead>
     <tr>
@@ -16,18 +17,18 @@
       </td>
       <td>
         <ng-container>
-            <!-- <app-taal-editor
+          <app-taal-editor
+            [disabled]="true"
             (taalEditorChange)="taalEditorChange($event)"
             [index]="i"
-            [initialValue]="{ parts: data.parts, icuExpressions: data.icuExpressions }"></app-taal-editor> -->
+            [initialValue]="{ parts: data.parts, icuExpressions: data.icuExpressions }"></app-taal-editor>
         </ng-container>
       </td>
       <td (click)="startEdit(i)">
-            {{data.targetParts}} - {{data.icuExpressions}}
-            <app-taal-editor
-              (taalEditorChange)="taalEditorChange($event)"              
-              [index]="i"
-              [initialValue]="{ parts: data.targetParts, icuExpressions: data.icuExpressions }"></app-taal-editor>
+        <app-taal-editor
+          (taalEditorChange)="taalEditorChange($event)"              
+          [index]="i"
+          [initialValue]="{ parts: data.targetParts, icuExpressions: data.icuExpressions }"></app-taal-editor>
       </td>
       <td>
         <button

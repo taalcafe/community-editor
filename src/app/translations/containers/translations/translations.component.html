@@ -23,7 +23,7 @@
         (saveTranslation)="saveTranslation($event)"></app-translations-table>
       <app-translations-modern *ngSwitchCase="'modern'"></app-translations-modern>
     </ng-container>
-    <button nz-button nzType="primary" [nzSize]="'large'" nzShape="round" (click)="download()"><i nz-icon type="download"></i>Download as .xlf</button>
+    <button class="download-button" nz-button nzType="primary" [nzSize]="'large'" nzShape="round" (click)="download()"><i nz-icon type="download"></i>Download as .xlf</button>
 </div>
 
 <nz-footer *ngIf="view === 'modern'">
