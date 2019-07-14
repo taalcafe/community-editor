@@ -22,6 +22,8 @@ export class TranslationsComponent implements OnInit {
   translationsCount$: Observable<number>;
   @Select(state => state.translations.missingTranslationsMap)
   missingTranslationsMap$: Observable<{[id: string]: boolean;}>;
+  @Select(state => state.translations.invalidTranslationsMap)
+  invalidTranslationsMap$: Observable<{[id: string]: string;}>;
 
   showComments: boolean;
   showNotes: boolean;

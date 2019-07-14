@@ -5,6 +5,7 @@ import { TranslationMessagesFileFactory } from 'src/app/ngx-lib/api';
 import { saveAs } from 'file-saver/src/FileSaver';
 import { denormalizeInto } from 'src/app/upload-translation-file/handler/denormalizer';
 import ISO6391 from 'iso-639-1';
+import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
 
 // Actions
 export class LoadTranslations {
@@ -31,6 +32,7 @@ export interface TranslationsStateModel {
     targetLanguage: string;
     translationsCount: number;
     missingTranslationsMap: { [id: string]: boolean; }
+    invalidTranslationsMap: { [id: string]: string; }
 }
 
 // State
@@ -43,7 +45,9 @@ export interface TranslationsStateModel {
     sourceLanguage: undefined,
     targetLanguage: undefined,
     translationsCount: 0,
-    missingTranslationsMap: {}
+    
+    missingTranslationsMap: {},
+    invalidTranslationsMap: {}
   }
 })
 export class TranslationsState {
@@ -73,14 +77,24 @@ export class TranslationsState {
     @Action(UpdateTranslation)
     updateTranslation({ getState, patchState }, action: UpdateTranslation) {
       let translations = getState().translations;
-      let updatedTranslation = translations[action.index];
+      let updatedTranslation: Translation = translations[action.index];
+
+      let invalidTranslationsMap = getState().invalidTranslationsMap
+      if(!action.target || updatedTranslation.parts.length != action.target.length) {
+          invalidTranslationsMap[updatedTranslation.translationId] = 'Missing translation parts';
+      } else {
+        if (updatedTranslation[updatedTranslation.translationId]) {
+          delete invalidTranslationsMap[updatedTranslation.translationId]
+        }
+      }
+
       let missingTranslationsMap = getState().missingTranslationsMap
-      updatedTranslation.targetParts = action.target;
+      updatedTranslation.targetParts = <ITaalMessagePart[]>action.target;
       if (missingTranslationsMap[updatedTranslation.translationId]) {
         delete missingTranslationsMap[updatedTranslation.translationId]
       }
 
-      patchState({ missingTranslationsMap })
+      patchState({ missingTranslationsMap, invalidTranslationsMap })
     }
 
     @Action(DownloadTranslationsFile)

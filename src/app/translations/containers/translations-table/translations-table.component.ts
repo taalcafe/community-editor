@@ -12,6 +12,7 @@ export class TranslationsTableComponent implements OnInit {
   @Input() translations: Translation[];
   @Input() sourceLanguage: string;
   @Input() targetLanguage: string;
+  @Input() invalidTranslationsMap: { [key: string]: any };
 
   @Output() saveTranslation: EventEmitter<{index: number, target: TaalPart[]}> = new EventEmitter();
 

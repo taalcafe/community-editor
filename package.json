@@ -39,7 +39,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "rxjs": "~6.3.3",
-    "taal-editor": "0.0.1-SNAPSHOT.1",
+    "taal-editor": "0.0.1-SNAPSHOT.2",
     "tokenizr": "^1.5.4",
     "tslib": "^1.9.0",
     "uuid": "^3.3.2",

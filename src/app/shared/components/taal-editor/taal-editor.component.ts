@@ -53,9 +53,7 @@ export class TaalEditorComponent implements OnInit {
         this.rootDomID = uuid.v1();
     }
 
-    ngOnChanges() {
-        this.render();
-    }
+    
 
     ngAfterViewInit() {
         this.render();
