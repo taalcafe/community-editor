@@ -7,6 +7,7 @@ import { TranslationEditComponent } from './components/translation-edit/translat
 import { TranslationsTableComponent } from './containers/translations-table/translations-table.component';
 import { TranslationsModernComponent } from './containers/translations-modern/translations-modern.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [TranslationsComponent, TranslationEditComponent, TranslationsTableComponent, TranslationsModernComponent],
@@ -22,7 +23,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         component: TranslationsComponent,
         children: [ ]
       }
-    ])
+    ]),
+
+    SharedModule
   ]
 })
 export class TranslationsModule { }

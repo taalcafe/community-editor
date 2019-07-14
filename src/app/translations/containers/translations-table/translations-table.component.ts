@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Select } from '@ngxs/store';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { Observable } from 'apollo-link';
+import * as Slate from 'slate';
 
 @Component({
   selector: 'app-translations-table',
@@ -27,7 +28,6 @@ export class TranslationsTableComponent implements OnInit {
   }
 
   saveEdit(index: number): void {
-    // Object.assign(this.translations[index], this.editCache[index].data);
     this.editCache[index].edit = false;
 
     this.saveTranslation.emit({index, target: this.editCache[index].data})
@@ -40,6 +40,11 @@ export class TranslationsTableComponent implements OnInit {
         data: { ...item }
       };
     });
+  }
+
+  translationUpdated(event: Slate.Value, index: number) {
+    console.log('changed')
+    this.editCache[index].data.translation;
   }
 
   ngOnInit(): void {

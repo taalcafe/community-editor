@@ -1,9 +1,10 @@
 <nz-table #translationsTable nzBordered [nzData]="translations" nzSize="small">
   <thead>
     <tr>
-      <th nzWidth="25%">Key</th>
+      <th nzWidth="23%">Key</th>
       <th nzWidth="15%">Default</th>
       <th nzWidth="40%">Translation (German) </th>
+      <th nzWidth="2%"></th>
     </tr>
   </thead>
   <tbody>
@@ -23,16 +24,15 @@
           {{ getTarget(data) }}
         </ng-container>
         <ng-template #translationInputTpl>
-          <div style="display: flex;">
-            <input type="text" nz-input [(ngModel)]="editCache[i].data.translation" />
-            <button
-              style="margin-left: 10px;"
-              nz-button
-              nzType="primary"
-              nzGhost
-              (click)="saveEdit(i)"><i nz-icon type="check"></i></button>
-          </div>
+          <app-taal-editor (onChange)="translationUpdated($event, i)" [initialValue]="{ parts: data.parts, icuExpressions: data.icuExpressions }"></app-taal-editor>
         </ng-template>
+      </td>
+      <td>
+        <button
+          nz-button
+          nzType="primary"
+          nzGhost
+          (click)="saveEdit(i)"><i nz-icon type="check"></i></button>
       </td>
     </tr>
   </tbody>
