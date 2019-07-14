@@ -4,8 +4,8 @@
     <tr>
       <th nzWidth="23%">Key</th>
       <th nzWidth="15%">Source (<b>{{ sourceLanguage }}</b>)</th>
-      <th nzWidth="40%">Target (<b>{{ targetLanguage }}</b>)</th>
-      <th nzWidth="2%"></th>
+      <th>Target (<b>{{ targetLanguage }}</b>)</th>
+      <th nzWidth="90px"></th>
     </tr>
   </thead>
   <tbody>
@@ -24,18 +24,28 @@
             [initialValue]="{ parts: data.parts, icuExpressions: data.icuExpressions }"></app-taal-editor>
         </ng-container>
       </td>
-      <td (click)="startEdit(i)">
+      <td>
         <app-taal-editor
+          (click)="startEdit(i)"
           (taalEditorChange)="taalEditorChange($event)"              
           [index]="i"
           [initialValue]="{ parts: data.targetParts, icuExpressions: data.icuExpressions }"></app-taal-editor>
       </td>
       <td>
         <button
+          style="display: inline-block;"
           nz-button
           nzType="primary"
           nzGhost
+          [disabled]="!editCache[i].edit"
           (click)="saveEdit(i)"><i nz-icon type="check"></i></button>
+          <button
+          style="display: inline-block; margin-left: 8px;"
+          nz-button
+          nzType="danger"
+          nzGhost
+          [disabled]="!editCache[i].edit"
+          (click)="undoEdit(i)"><i nz-icon type="undo"></i></button>
       </td>
     </tr>
   </tbody>

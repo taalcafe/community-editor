@@ -22,7 +22,7 @@ export class TranslationsTableComponent implements OnInit {
     this.editCache[index].edit = true;
   }
 
-  cancelEdit(index: number): void {
+  undoEdit(index: number): void {
     this.editCache[index] = {
       data: { ...this.translations[index] },
       edit: false
@@ -46,6 +46,9 @@ export class TranslationsTableComponent implements OnInit {
   }
 
   taalEditorChange(event: any) {
+    // let temp = {}
+    // temp[event.index].data.draftTranslation = event.value;
+    // this.editCache = temp;
     this.editCache[event.index].data.draftTranslation = event.value;
   }
 
