@@ -4,7 +4,10 @@
       nzBackIcon
       [nzTitle]="'Translations (' + (sourceLanguage$ | async) + ' - ' + (targetLanguage$ | async) + ')'">
       <nz-page-header-content>
-        <div *ngIf="(missingTranslationsMap$ | async) as missingTranslationsMap">{{ getObjectKeysLength(missingTranslationsMap) }} out of {{ (translationsCount$ | async) }} translations missing</div>
+        <ng-container *ngIf="(missingTranslationsMap$ | async) as missingTranslationsMap">
+          <div *ngIf="getObjectKeysLength(missingTranslationsMap) > 0"><span style="color: red">{{ getObjectKeysLength(missingTranslationsMap) }}</span> out of {{ (translationsCount$ | async) }} translations missing</div>
+          <div *ngIf="getObjectKeysLength(missingTranslationsMap) <= 0">All {{ (translationsCount$ | async) }} translations are completed!</div>    
+        </ng-container>
         <nz-radio-group  nzSize="small" style="float: right; margin-top: -36px;" [(ngModel)]="view" name="view" [nzButtonStyle]="'solid'">
           <label nz-radio-button nzValue="table"><i nz-icon nzType="table" nzTheme="outline"></i></label>
           <label nz-radio-button nzValue="modern"><i nz-icon nzType="bars" nzTheme="outline"></i></label>

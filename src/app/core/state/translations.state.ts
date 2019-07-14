@@ -73,7 +73,14 @@ export class TranslationsState {
     @Action(UpdateTranslation)
     updateTranslation({ getState, patchState }, action: UpdateTranslation) {
       let translations = getState().translations;
-      translations[action.index].targetParts = action.target;
+      let updatedTranslation = translations[action.index];
+      let missingTranslationsMap = getState().missingTranslationsMap
+      updatedTranslation.targetParts = action.target;
+      if (missingTranslationsMap[updatedTranslation.translationId]) {
+        delete missingTranslationsMap[updatedTranslation.translationId]
+      }
+
+      patchState({ missingTranslationsMap })
     }
 
     @Action(DownloadTranslationsFile)
