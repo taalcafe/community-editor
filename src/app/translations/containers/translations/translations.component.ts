@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { Observable } from 'apollo-link';
 import { Select, Store } from '@ngxs/store';
-import { UpdateTranslation } from 'src/app/core/state/translations.state';
+import { UpdateTranslation, DownloadTranslationsFile } from 'src/app/core/state/translations.state';
 
 @Component({
   selector: 'app-translations',
@@ -80,8 +80,11 @@ export class TranslationsComponent implements OnInit {
   }
 
   saveTranslation(event: any) {
-    debugger;
     this.store.dispatch(new UpdateTranslation(event.index, event.target));
+  }
+
+  download() {
+    this.store.dispatch(new DownloadTranslationsFile());
   }
 
 }

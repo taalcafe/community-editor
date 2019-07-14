@@ -33,10 +33,11 @@ export class UploadTranslationFileComponent implements OnInit {
       console.log(fileReader.result);
 
       const factory = new TranslationMessagesFileFactory();
+      const content = <string>fileReader.result;
 
       const file = factory.createFileFromFileContent(
         FORMAT_XLIFF20,
-        <string>fileReader.result,
+        content,
         item.file.name,
         'utf8'
       );
@@ -46,7 +47,7 @@ export class UploadTranslationFileComponent implements OnInit {
 
 
       const translations: Translation[] = normalize(transUnits);
-      this.store.dispatch(new LoadTranslations(translations, item.file.name))
+      this.store.dispatch(new LoadTranslations(translations, item.file.name, content))
       this.router.navigate(['translations'])
     }
 
