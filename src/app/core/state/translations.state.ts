@@ -3,6 +3,7 @@ import { Translation } from 'src/app/upload-translation-file/models/translation'
 import { TaalPart } from 'taal-editor';
 import { TranslationMessagesFileFactory } from 'src/app/ngx-lib/api';
 import { saveAs } from 'file-saver/src/FileSaver';
+import { denormalizeInto } from 'src/app/upload-translation-file/handler/denormalizer';
 
 // Actions
 export class LoadTranslations {
@@ -55,11 +56,13 @@ export class TranslationsState {
         .createFileFromUnknownFormatFileContent(getState().inputXml, 'nop', 'utf8')
         .createTranslationFileForLang('bg', 'nop', false, true);
 
+      denormalizeInto(translations, file);
+      
       const translatedContent = file.editedContent(true);
       var blob = new Blob([translatedContent], {
         type: "text/xml;charset=utf-8"
        });
-       debugger;
+       
        saveAs(blob, getState().fileName);
     }
 }
