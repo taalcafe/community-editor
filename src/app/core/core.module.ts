@@ -11,6 +11,7 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { SharedModule } from '../shared/shared.module';
 import { NgxsModule } from '@ngxs/store';
 import { TranslationsState } from './state/translations.state';
+import { TranslationFileLoadedGuard } from '../shared/guards/translation-file-loaded.guard';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { TranslationsState } from './state/translations.state';
           { path: 'translation-files/upload', loadChildren: '../upload-translation-file/upload-translation-file.module#UploadTranslationFileModule' },
           { path: 'applications', loadChildren: '../applications/applications.module#ApplicationsModule' },
           { path: 'translation-files', loadChildren: '../translation-files/translation-files.module#TranslationFilesModule' },
-          { path: 'translations', loadChildren: '../translations/translations.module#TranslationsModule' },
+          { path: 'translations', loadChildren: '../translations/translations.module#TranslationsModule', canActivate: [TranslationFileLoadedGuard] },
         ]
       },
 
