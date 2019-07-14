@@ -18,6 +18,10 @@ export class TranslationsComponent implements OnInit {
   sourceLanguage$: Observable<string>;
   @Select(state => state.translations.targetLanguage)
   targetLanguage$: Observable<string>;
+  @Select(state => state.translations.translationsCount)
+  translationsCount$: Observable<number>;
+  @Select(state => state.translations.missingTranslationsMap)
+  missingTranslationsMap$: Observable<{[id: string]: boolean;}>;
 
   showComments: boolean;
   showNotes: boolean;
@@ -89,6 +93,10 @@ export class TranslationsComponent implements OnInit {
 
   download() {
     this.store.dispatch(new DownloadTranslationsFile());
+  }
+
+  getObjectKeysLength(obj: any) {
+    return Object.keys(obj).length;
   }
 
 }

@@ -26,8 +26,10 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
   for (let i = 0; i < transUnits.length; i += 1) {
     const tu = transUnits[i];
     const normalized = tu.sourceContentNormalized() as ParsedMessage;
+    const targetNormalized = tu.targetContentNormalized() as ParsedMessage;
 
     const parts = normalized.parts();
+    const targetParts = targetNormalized.parts();
     const [firstPart, ...rest] = parts;
 
     if (firstPart.type === ParsedMessagePartType.ICU_MESSAGE) {
@@ -49,7 +51,7 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
       processedSourceParts = normalized.parts().map(p => toTaalPart(p));
 
       let processedTargetParts: ITaalMessagePart[] = null;
-      processedTargetParts = normalized.parts().map(p => toTaalPart(p));
+      processedTargetParts = targetNormalized.parts().map(p => toTaalPart(p));
 
       translation.parts = processedSourceParts;
       translation.sourceParts = processedSourceParts;
