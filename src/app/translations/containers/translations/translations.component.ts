@@ -14,6 +14,10 @@ export class TranslationsComponent implements OnInit {
 
   @Select(state => state.translations.translations)
   translations$: Observable<Translation[]>;
+  @Select(state => state.translations.sourceLanguage)
+  sourceLanguage$: Observable<string>;
+  @Select(state => state.translations.targetLanguage)
+  targetLanguage$: Observable<string>;
 
   showComments: boolean;
   showNotes: boolean;

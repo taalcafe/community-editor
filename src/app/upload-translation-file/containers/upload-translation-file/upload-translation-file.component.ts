@@ -47,7 +47,12 @@ export class UploadTranslationFileComponent implements OnInit {
 
 
       const translations: Translation[] = normalize(transUnits);
-      this.store.dispatch(new LoadTranslations(translations, item.file.name, content))
+      this.store.dispatch(new LoadTranslations(
+        translations,
+        item.file.name,
+        content,
+        file.sourceLanguage(),
+        file.targetLanguage()))
       this.router.navigate(['translations'])
     }
 

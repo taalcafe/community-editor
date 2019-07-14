@@ -2,7 +2,7 @@
     <nz-page-header
       (nzBack)="onBack()"
       nzBackIcon
-      nzTitle="Translations">
+      [nzTitle]="'Translations (' + (sourceLanguage$ | async) + ' - ' + (targetLanguage$ | async) + ')'">
       <nz-page-header-content>
         <nz-radio-group  nzSize="small" style="float: right; margin-top: -36px;" [(ngModel)]="view" name="view" [nzButtonStyle]="'solid'">
           <label nz-radio-button nzValue="table"><i nz-icon nzType="table" nzTheme="outline"></i></label>
@@ -13,6 +13,8 @@
     <ng-container [ngSwitch]="view">
       <app-translations-table *ngSwitchCase="'table'"
         [translations]="translations$ | async"
+        [sourceLanguage]="sourceLanguage$ | async"
+        [targetLanguage]="targetLanguage$ | async"
         (saveTranslation)="saveTranslation($event)"></app-translations-table>
       <app-translations-modern *ngSwitchCase="'modern'"></app-translations-modern>
     </ng-container>

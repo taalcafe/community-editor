@@ -4,11 +4,12 @@ import { TaalPart } from 'taal-editor';
 import { TranslationMessagesFileFactory } from 'src/app/ngx-lib/api';
 import { saveAs } from 'file-saver/src/FileSaver';
 import { denormalizeInto } from 'src/app/upload-translation-file/handler/denormalizer';
+import ISO6391 from 'iso-639-1';
 
 // Actions
 export class LoadTranslations {
     static readonly type = '[Translations] Load Translations';
-    constructor(public translations: Translation[], public fileName: string, public xml: string) {}
+    constructor(public translations: Translation[], public fileName: string, public xml: string, public sourceLanguage: string, public targetLanguage: string) {}
 }
 
 export class UpdateTranslation {
@@ -26,6 +27,8 @@ export interface TranslationsStateModel {
     translations: Translation[];
     fileName: string;
     inputXml: string;
+    sourceLanguage: string;
+    targetLanguage: string;
 }
 
 // State
@@ -34,13 +37,24 @@ export interface TranslationsStateModel {
   defaults: {
     translations: [],
     fileName: undefined,
-    inputXml: undefined
+    inputXml: undefined,
+    sourceLanguage: undefined,
+    targetLanguage: undefined
   }
 })
 export class TranslationsState {
     @Action(LoadTranslations)
     loadTranslations({ patchState }, action: LoadTranslations) {
-      patchState({ translations: action.translations, fileName: action.fileName, inputXml: action.xml })
+      let sourceLanguage = action.sourceLanguage ? (<any>ISO6391).getName(action.sourceLanguage) : undefined;
+      let targetLanguage = action.targetLanguage ? (<any>ISO6391).getName(action.targetLanguage) : undefined;
+
+      patchState({
+        translations: action.translations,
+        fileName: action.fileName,
+        inputXml: action.xml,
+        sourceLanguage: sourceLanguage,
+        targetLanguage: targetLanguage
+      })
     }
 
     @Action(UpdateTranslation)
@@ -57,7 +71,7 @@ export class TranslationsState {
         .createTranslationFileForLang('bg', 'nop', false, true);
 
       denormalizeInto(translations, file);
-      
+
       const translatedContent = file.editedContent(true);
       var blob = new Blob([translatedContent], {
         type: "text/xml;charset=utf-8"

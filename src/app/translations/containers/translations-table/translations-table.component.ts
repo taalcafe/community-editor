@@ -10,6 +10,9 @@ import { convertFromSlate, TaalPart } from 'taal-editor';
 export class TranslationsTableComponent implements OnInit {
 
   @Input() translations: Translation[];
+  @Input() sourceLanguage: string;
+  @Input() targetLanguage: string;
+
   @Output() saveTranslation: EventEmitter<{index: number, target: TaalPart[]}> = new EventEmitter();
 
   editCache: { [key: string]: any } = {};
