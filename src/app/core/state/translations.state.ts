@@ -1,5 +1,6 @@
 import { State, Action, StateContext } from '@ngxs/store';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
+import { TaalPart } from 'taal-editor';
 
 // Actions
 export class LoadTranslations {
@@ -9,7 +10,7 @@ export class LoadTranslations {
 
 export class UpdateTranslation {
   static readonly type = '[Translations] Update Translation';
-  constructor(public index: number, public target: any) {}
+  constructor(public index: number, public target: TaalPart[]) {}
 }
 
 // State Model
@@ -35,7 +36,6 @@ export class TranslationsState {
     @Action(UpdateTranslation)
     updateTranslation({ getState, patchState }, action: UpdateTranslation) {
         let translations = getState().translations;
-        translations[action.index].target = action.target;
-        // patchState({ translations: action.translations, fileName: action.fileName })
+        translations[action.index].targetParts = action.target;
     }
 }

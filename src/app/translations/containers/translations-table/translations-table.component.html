@@ -24,7 +24,10 @@
           {{ getTarget(data) }}
         </ng-container>
         <ng-template #translationInputTpl>
-          <app-taal-editor (onChange)="translationUpdated($event, i)" [initialValue]="{ parts: data.parts, icuExpressions: data.icuExpressions }"></app-taal-editor>
+          <app-taal-editor
+            (taalEditorChange)="taalEditorChange($event)"
+            [index]="i"
+            [initialValue]="{ parts: data.parts, icuExpressions: data.icuExpressions }"></app-taal-editor>
         </ng-template>
       </td>
       <td>

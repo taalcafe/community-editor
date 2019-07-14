@@ -13,16 +13,20 @@ import * as Slate from 'slate';
 })
 export class TaalEditorComponent implements OnInit {
 
-  @Input() initialValue: TaalTranslation;
-  @Output() changed: EventEmitter<Slate.Value> = new EventEmitter();
+    @Input() index: number;
+    @Input() initialValue: TaalTranslation;
+    @Output() taalEditorChange: EventEmitter<{value: Slate.Value, index: number }> = new EventEmitter();
 
-  private rootDomID: string;
-    
-  protected getRootDomNode() {
-      const node = document.getElementById(this.rootDomID);
-      invariant(node, `Node '${this.rootDomID} not found!`);
-      return node;
-  }
+    private rootDomID: string;
+        
+    protected getRootDomNode() {
+        const node = document.getElementById(this.rootDomID);
+        invariant(node, `Node '${this.rootDomID} not found!`);
+        return node;
+    }
+    onChange = ($event: Slate.Value) => {
+        this.taalEditorChange.emit({value: $event, index: this.index})
+    }
 
     protected getProps(): TaalEditorProps {
         const {
@@ -35,29 +39,25 @@ export class TaalEditorComponent implements OnInit {
         };
     }
 
-    onChange = ($event: Slate.Value) => {
-        this.changed.emit($event)
+    private isMounted(): boolean {
+        return !!this.rootDomID;
     }
 
-  private isMounted(): boolean {
-      return !!this.rootDomID;
-  }
+    protected render() {
+        if (this.isMounted()) {
+            ReactDOM.render(React.createElement(TaalEditor, this.getProps()), this.getRootDomNode());
+        }
+    }
 
-  protected render() {
-      if (this.isMounted()) {
-          ReactDOM.render(React.createElement(TaalEditor, this.getProps()), this.getRootDomNode());
-      }
-  }
+    ngOnInit() {
+        this.rootDomID = uuid.v1();
+    }
 
-  ngOnInit() {
-      this.rootDomID = uuid.v1();
-  }
+    ngOnChanges() {
+        this.render();
+    }
 
-  ngOnChanges() {
-      this.render();
-  }
-
-  ngAfterViewInit() {
-      this.render();
-  }
+    ngAfterViewInit() {
+        this.render();
+    }
 }

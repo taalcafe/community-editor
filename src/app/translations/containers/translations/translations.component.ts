@@ -80,6 +80,7 @@ export class TranslationsComponent implements OnInit {
   }
 
   saveTranslation(event: any) {
+    debugger;
     this.store.dispatch(new UpdateTranslation(event.index, event.target));
   }
 

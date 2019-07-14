@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Select } from '@ngxs/store';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
-import { Observable } from 'apollo-link';
-import * as Slate from 'slate';
+import { convertFromSlate, TaalPart } from 'taal-editor';
 
 @Component({
   selector: 'app-translations-table',
@@ -12,7 +10,7 @@ import * as Slate from 'slate';
 export class TranslationsTableComponent implements OnInit {
 
   @Input() translations: Translation[];
-  @Output() saveTranslation: EventEmitter<{index: number, target: string}> = new EventEmitter();
+  @Output() saveTranslation: EventEmitter<{index: number, target: TaalPart[]}> = new EventEmitter();
 
   editCache: { [key: string]: any } = {};
 
@@ -29,8 +27,9 @@ export class TranslationsTableComponent implements OnInit {
 
   saveEdit(index: number): void {
     this.editCache[index].edit = false;
+    let translationParts = convertFromSlate(this.editCache[index].data.draftTranslation)
 
-    this.saveTranslation.emit({index, target: this.editCache[index].data})
+    this.saveTranslation.emit({index, target: translationParts.parts})
   }
 
   updateEditCache(): void {
@@ -42,9 +41,8 @@ export class TranslationsTableComponent implements OnInit {
     });
   }
 
-  translationUpdated(event: Slate.Value, index: number) {
-    console.log('changed')
-    this.editCache[index].data.translation;
+  taalEditorChange(event: any) {
+    this.editCache[event.index].data.draftTranslation = event.value;
   }
 
   ngOnInit(): void {
