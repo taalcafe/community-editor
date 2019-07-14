@@ -52,12 +52,12 @@ export class TranslationsTableComponent implements OnInit {
     this.updateEditCache();
   }
 
-  getSource(translations: Translation) {
-    return translations.sourceParts.map(_ => _.value).join('');
+  getSource(translation: Translation) {
+    return translation.sourceParts.map(_ => _.value).join('');
   }
 
-  getTarget(translations: Translation) {
-    return translations.targetParts.map(_ => _.value).join('');
+  getTarget(translation: Translation) {
+    return translation.targetParts.map(_ => _.value).join('');
   }
 
 }

@@ -29,6 +29,8 @@ export interface TranslationsStateModel {
     inputXml: string;
     sourceLanguage: string;
     targetLanguage: string;
+    translationsCount: number;
+    missingTranslationsMap: { [id: string]: boolean; }
 }
 
 // State
@@ -39,7 +41,9 @@ export interface TranslationsStateModel {
     fileName: undefined,
     inputXml: undefined,
     sourceLanguage: undefined,
-    targetLanguage: undefined
+    targetLanguage: undefined,
+    translationsCount: 0,
+    missingTranslationsMap: {}
   }
 })
 export class TranslationsState {
@@ -48,12 +52,21 @@ export class TranslationsState {
       let sourceLanguage = action.sourceLanguage ? (<any>ISO6391).getName(action.sourceLanguage) : undefined;
       let targetLanguage = action.targetLanguage ? (<any>ISO6391).getName(action.targetLanguage) : undefined;
 
+      let translationsCount = action.translations.length;
+      let missingTranslationsMap = {};
+      action.translations
+        .filter(_ => !_.targetParts || (_.targetParts.length < 1))
+        .map(_ => _.translationId)
+        .forEach(_ => missingTranslationsMap[_] = true);
+
       patchState({
         translations: action.translations,
         fileName: action.fileName,
         inputXml: action.xml,
         sourceLanguage: sourceLanguage,
-        targetLanguage: targetLanguage
+        targetLanguage: targetLanguage,
+        translationsCount,
+        missingTranslationsMap
       })
     }
 
