@@ -48,6 +48,7 @@ export class TaalEditorComponent implements OnInit {
     }
 
     ngOnChanges() {
+        ReactDOM.unmountComponentAtNode(this.getRootDomNode())
         this.render()
     }
 
