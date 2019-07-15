@@ -12,7 +12,7 @@ import en from '@angular/common/locales/en';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { DownloadOutline, FileTextOutline, EditOutline, MessageOutline, ProfileOutline, BellOutline, FlagOutline, BarsOutline, TableOutline, PlusOutline, CheckOutline, UndoOutline } from '@ant-design/icons-angular/icons';
+import { DownloadOutline, FileTextOutline, EditOutline, MessageOutline, ProfileOutline, BellOutline, FlagOutline, BarsOutline, TableOutline, PlusOutline, CheckOutline, UndoOutline, ExclamationCircleOutline } from '@ant-design/icons-angular/icons';
 import { GraphQLModule } from './graphql.module';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
@@ -32,7 +32,8 @@ const icons: IconDefinition[] = [
   TableOutline,
   PlusOutline,
   CheckOutline,
-  UndoOutline
+  UndoOutline,
+  ExclamationCircleOutline
 ];
 @NgModule({
   declarations: [

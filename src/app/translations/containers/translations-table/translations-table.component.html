@@ -2,8 +2,8 @@
 <nz-table #translationsTable nzBordered [nzData]="translations" nzSize="small">
   <thead>
     <tr>
-      <th nzWidth="23%">Key</th>
-      <th nzWidth="15%">Source (<b>{{ sourceLanguage }}</b>)</th>
+      <th nzWidth="25%">Key</th>
+      <th nzWidth="20%">Source (<b>{{ sourceLanguage }}</b>)</th>
       <th>Target (<b>{{ targetLanguage }}</b>)</th>
       <th nzWidth="90px"></th>
     </tr>
@@ -11,9 +11,8 @@
   <tbody>
     <tr *ngFor="let data of translationsTable.data; let i = index" [ngClass]="{ 'invalid-row': invalidTranslationsMap[data.translationId]}">
       <td>
-        <ng-container>
-          {{ data.translationId }}
-        </ng-container>
+          <i *ngIf="invalidTranslationsMap[data.translationId]" style="margin-right: 5px; color: red" nz-icon nzType="exclamation-circle" nzTheme="outline"></i>
+          <span style="max-width: 100px; display: inline-block">{{ data.translationId.length > 28 ? (data.translationId | slice:0:28) + '...' : data.translationId }}</span>
       </td>
       <td>
         <ng-container>

@@ -80,7 +80,15 @@ export class TranslationsState {
       let updatedTranslation: Translation = translations[action.index];
 
       let invalidTranslationsMap = getState().invalidTranslationsMap
-      if(!action.target || updatedTranslation.parts.length != action.target.length) {
+
+
+      let sourceICUExpressionsCount = updatedTranslation.parts.filter(_ => _.type === 'ICU_MESSAGE_REF').length;
+      let targetICUExpressionsCount = action.target.filter(_ => _.type === 'ICU_MESSAGE_REF').length;
+      let sourcePlaceholdersCount = updatedTranslation.parts.filter(_ => _.type === 'PLACEHOLDER').length;
+      let targetPlaceholdersCount = action.target.filter(_ => _.type === 'PLACEHOLDER').length;
+      let icuExpressionsCountMatch = sourceICUExpressionsCount === targetICUExpressionsCount;
+      let placeholdersCountMatch = sourcePlaceholdersCount === targetPlaceholdersCount;
+      if(!action.target || !icuExpressionsCountMatch || !placeholdersCountMatch) {
           invalidTranslationsMap[updatedTranslation.translationId] = 'Missing translation parts';
       } else {
         if (updatedTranslation[updatedTranslation.translationId]) {
