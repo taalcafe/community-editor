@@ -56,11 +56,18 @@
             (click)="undoEdit(i)"><i nz-icon type="undo"></i></button>
         </td>
       </tr>
-      <tr *ngIf="editCache[i].missingPlaceholders?.length" [nzExpand]="mapOfExpandData[i]">
+      <tr *ngIf="editCache[i].missingPlaceholders?.length || editCache[i].missingICUExpressions?.length" [nzExpand]="mapOfExpandData[i]">
         <td></td>
         <td></td>
         <td></td>
-        <td>Missing Placeholders: <span class="placeholder" (click)="addPlaceholder(placeholder, i)" *ngFor="let placeholder of editCache[i].missingPlaceholders">{{ placeholder.meta }}</span></td>
+        <td>
+          <div *ngIf="editCache[i].missingPlaceholders?.length">
+            Missing Placeholders: <span class="placeholder" (click)="addPlaceholder(item, i)" *ngFor="let item of editCache[i].missingPlaceholders">{{ item.meta }}</span>
+          </div>
+          <div *ngIf="editCache[i].missingICUExpressions?.length">
+            Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item, i)" *ngFor="let item of editCache[i].missingICUExpressions">ICU Expression</span>
+          </div>
+        </td>
         <td></td>
       </tr>
     </ng-container>

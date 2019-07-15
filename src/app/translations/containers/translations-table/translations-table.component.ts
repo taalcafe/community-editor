@@ -32,7 +32,8 @@ export class TranslationsTableComponent implements OnInit {
     this.editCache[index] = {
       data: { ...this.translations[index] },
       edit: false,
-      missingTranslations: []
+      missingTranslations: [],
+      missingICUExpressions: []
     };
     this.mapOfExpandData[index] = false;
   }
@@ -60,6 +61,12 @@ export class TranslationsTableComponent implements OnInit {
     this.editCache[event.index].data.draftTranslation = event.value;
 
     this.updateMissingPlaceholders(event.index);
+    this.updateMissingICUExpressions(event.index);
+  }
+
+  addICUExpression(icuExpression: any, index: number) {
+    this.taalEditorActionDispatcher.next({index, action: 'ADD_ICU_MESSAGE_REF', data: icuExpression.meta});
+    this.updateMissingICUExpressions(index);
   }
 
   addPlaceholder(placeholder: any, index: number) {
@@ -67,11 +74,19 @@ export class TranslationsTableComponent implements OnInit {
     this.updateMissingPlaceholders(index);
   }
 
+  updateMissingICUExpressions(index: number) {
+    let targetParts = convertFromSlate(this.editCache[index].data.draftTranslation);
+    let sourceICUExpressions = this.editCache[index].data.parts.filter(_ => _.type === 'ICU_MESSAGE_REF');
+    let targetICUExpressions = targetParts.parts.filter(_ => _.type === 'ICU_MESSAGE_REF');
+    let missingICUExpressions = sourceICUExpressions.filter(src => !targetICUExpressions.find(trg => trg.meta === src.meta))
+
+    this.editCache[index].missingICUExpressions = missingICUExpressions;
+  }
+
   updateMissingPlaceholders(index: number) {
     let targetParts = convertFromSlate(this.editCache[index].data.draftTranslation);
     let sourcePlaceholders = this.editCache[index].data.parts.filter(_ => _.type === 'PLACEHOLDER');
     let targetPlaceholders = targetParts.parts.filter(_ => _.type === 'PLACEHOLDER');
-
     let missingPlaceholders = sourcePlaceholders.filter(src => !targetPlaceholders.find(trg => trg.meta === src.meta))
 
     this.editCache[index].missingPlaceholders = missingPlaceholders;

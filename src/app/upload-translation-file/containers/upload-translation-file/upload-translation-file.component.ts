@@ -45,7 +45,6 @@ export class UploadTranslationFileComponent implements OnInit {
       const transUnits: ITransUnit[] = [];
       file.forEachTransUnit(tu => transUnits.push(tu));
 
-
       const translations: Translation[] = normalize(transUnits);
       this.store.dispatch(new LoadTranslations(
         translations,
