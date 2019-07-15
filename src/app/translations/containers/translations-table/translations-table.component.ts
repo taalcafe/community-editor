@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { convertFromSlate, TaalPart } from 'taal-editor';
 import produce from 'immer';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-translations-table',
@@ -20,6 +21,7 @@ export class TranslationsTableComponent implements OnInit {
 
   editCache: { [key: string]: any } = {};
   mapOfExpandData: { [key: string]: boolean } = {};
+  taalEditorActionDispatcher: Subject<{ index: number, action: string, data: any }> = new Subject();
 
   startEdit(index: number): void {
     this.editCache[index].edit = true;
@@ -61,10 +63,7 @@ export class TranslationsTableComponent implements OnInit {
   }
 
   addPlaceholder(placeholder: any, index: number) {
-    let targetParts = produce(this.translations[index].targetParts, draft => {
-      draft.push(placeholder);
-    })
-    this.translations[index].targetParts = targetParts;
+    this.taalEditorActionDispatcher.next({index, action: 'ADD_PLACEHOLDER', data: placeholder.meta});
     this.updateMissingPlaceholders(index);
   }
 

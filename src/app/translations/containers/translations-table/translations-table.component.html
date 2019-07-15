@@ -36,6 +36,7 @@
             (taalEditorChange)="taalEditorChange($event)"              
             [index]="i"
             [parts]="data.targetParts"
+            [action$]="taalEditorActionDispatcher.asObservable()"
             [icuExpressions]="data.icuExpressions"></app-taal-editor>
         </td>
         <td>

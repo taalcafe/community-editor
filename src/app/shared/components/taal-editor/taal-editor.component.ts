@@ -5,6 +5,8 @@ import * as uuid from 'uuid';
 import * as invariant from 'invariant';
 import { TaalEditor, TaalTranslation, TaalEditorProps, TaalIcuExpression, TaalPart } from 'taal-editor';
 import * as Slate from 'slate';
+import { Observable, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-taal-editor',
@@ -13,6 +15,7 @@ import * as Slate from 'slate';
 })
 export class TaalEditorComponent implements OnInit {
 
+    @Input() action$: Observable<{ index: number, action: string, data: any }>;
     @Input() disabled: boolean;
     @Input() index: number;
 
@@ -23,6 +26,10 @@ export class TaalEditorComponent implements OnInit {
 
     private rootDomID: string;
     @ViewChild('taalEditor') el: ElementRef;
+
+    taalEditorInstance: TaalEditor;
+
+    ngUnsubscribe = new Subject<void>();
         
     protected getRootDomNode() {
         const node = this.el.nativeElement;
@@ -39,7 +46,7 @@ export class TaalEditorComponent implements OnInit {
 
     protected render() {
         if (this.isMounted()) {
-            ReactDOM.render(React.createElement(TaalEditor, <TaalEditorProps>{ onChange: this.onChange, initialValue: { parts: this.parts, icuExpressions: this.icuExpressions } }), this.getRootDomNode());
+            this.taalEditorInstance = ReactDOM.render(React.createElement(TaalEditor, <TaalEditorProps>{ onChange: this.onChange, initialValue: { parts: this.parts, icuExpressions: this.icuExpressions } }), this.getRootDomNode());
         }
     }
 
@@ -47,12 +54,23 @@ export class TaalEditorComponent implements OnInit {
         this.rootDomID = uuid.v1();
     }
 
-    ngOnChanges() {
-        ReactDOM.unmountComponentAtNode(this.getRootDomNode())
-        this.render()
-    }
-
     ngAfterViewInit() {
-        this.render()
+        this.render();
+        if(!this.disabled) {
+            this.action$.pipe(
+                filter(_ => _.index === this.index),
+                takeUntil(this.ngUnsubscribe))
+                .subscribe(_ => {
+                    if (_.action === 'ADD_PLACEHOLDER') {
+                        let temp = this.taalEditorInstance;
+                        temp.addPlaceholder(_.data);
+                    }
+                })
+        }
+    }
+ 
+    ngOnDestroy(): void {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }
