@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { convertFromSlate, TaalPart } from 'taal-editor';
+import produce from 'immer';
 
 @Component({
   selector: 'app-translations-table',
@@ -12,44 +13,69 @@ export class TranslationsTableComponent implements OnInit {
   @Input() translations: Translation[];
   @Input() sourceLanguage: string;
   @Input() targetLanguage: string;
+  @Input() missingTranslationsMap: { [key: string]: boolean };
   @Input() invalidTranslationsMap: { [key: string]: any };
 
   @Output() saveTranslation: EventEmitter<{index: number, target: TaalPart[]}> = new EventEmitter();
 
   editCache: { [key: string]: any } = {};
+  mapOfExpandData: { [key: string]: boolean } = {};
 
   startEdit(index: number): void {
     this.editCache[index].edit = true;
+    this.mapOfExpandData[index] = true;
   }
 
   undoEdit(index: number): void {
     this.editCache[index] = {
       data: { ...this.translations[index] },
-      edit: false
+      edit: false,
+      missingTranslations: []
     };
+    this.mapOfExpandData[index] = false;
   }
 
   saveEdit(index: number): void {
     this.editCache[index].edit = false;
-    let translationParts = convertFromSlate(this.editCache[index].data.draftTranslation)
+    let targetParts = convertFromSlate(this.editCache[index].data.draftTranslation)
 
-    this.saveTranslation.emit({index, target: translationParts.parts})
+    this.saveTranslation.emit({index, target: targetParts.parts})
+    this.mapOfExpandData[index] = false;
   }
 
   updateEditCache(): void {
+
     this.translations.forEach((item, i) => {
       this.editCache[i] = {
         edit: false,
-        data: { ...item }
+        data: { ...item },
+        missingPlaceholders: []
       };
     });
   }
 
   taalEditorChange(event: any) {
-    // let temp = {}
-    // temp[event.index].data.draftTranslation = event.value;
-    // this.editCache = temp;
     this.editCache[event.index].data.draftTranslation = event.value;
+
+    this.updateMissingPlaceholders(event.index);
+  }
+
+  addPlaceholder(placeholder: any, index: number) {
+    let targetParts = produce(this.translations[index].targetParts, draft => {
+      draft.push(placeholder);
+    })
+    this.translations[index].targetParts = targetParts;
+    this.updateMissingPlaceholders(index);
+  }
+
+  updateMissingPlaceholders(index: number) {
+    let targetParts = convertFromSlate(this.editCache[index].data.draftTranslation);
+    let sourcePlaceholders = this.editCache[index].data.parts.filter(_ => _.type === 'PLACEHOLDER');
+    let targetPlaceholders = targetParts.parts.filter(_ => _.type === 'PLACEHOLDER');
+
+    let missingPlaceholders = sourcePlaceholders.filter(src => !targetPlaceholders.find(trg => trg.meta === src.meta))
+
+    this.editCache[index].missingPlaceholders = missingPlaceholders;
   }
 
   ngOnInit(): void {

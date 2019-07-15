@@ -22,6 +22,7 @@
         [translations]="translations$ | async"
         [sourceLanguage]="sourceLanguage$ | async"
         [targetLanguage]="targetLanguage$ | async"
+        [missingTranslationsMap]="missingTranslationsMap$ | async"
         [invalidTranslationsMap]="invalidTranslationsMap$ | async"
         (saveTranslation)="saveTranslation($event)"></app-translations-table>
       <app-translations-modern *ngSwitchCase="'modern'"></app-translations-modern>
