@@ -65,12 +65,20 @@ export class TranslationsTableComponent implements OnInit {
   }
 
   addICUExpression(icuExpression: any, index: number) {
-    this.taalEditorActionDispatcher.next({index, action: 'ADD_ICU_MESSAGE_REF', data: icuExpression.meta});
+    this.taalEditorActionDispatcher.next({
+      index,
+      action: 'ADD_ICU_MESSAGE_REF',
+      data: { key: icuExpression.key, value: icuExpression.value }
+    });
     this.updateMissingICUExpressions(index);
   }
 
   addPlaceholder(placeholder: any, index: number) {
-    this.taalEditorActionDispatcher.next({index, action: 'ADD_PLACEHOLDER', data: placeholder.meta});
+    this.taalEditorActionDispatcher.next({
+      index,
+      action: 'ADD_PLACEHOLDER',
+      data: { key: placeholder.key, value: placeholder.meta }
+    });
     this.updateMissingPlaceholders(index);
   }
 

@@ -7,11 +7,13 @@ import { ITransUnit } from 'src/app/ngx-lib/api';
 import { ParsedMessage } from 'src/app/ngx-lib/impl/parsed-message';
 import { ITaalMessagePart } from '../models/taal-message-part';
 import { Translation } from '../models/translation';
+import * as uuid from 'uuid';
 
 const toTaalPart = (p: ParsedMessagePart) => {
   const part = <ITaalMessagePart>{
     type: p.type,
     value: p.asDisplayString(),
+    key: uuid()
   };
 
   if (p instanceof ParsedMessagePartPlaceholder) {
@@ -35,10 +37,21 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
     if (firstPart.type === ParsedMessagePartType.ICU_MESSAGE) {
       // Add as ICU message to previous translation
       const prev = normalizedTUs[normalizedTUs.length - 1];
+      const key = uuid();
       prev.icuExpressions.push({
         id: tu.id,
         parts: rest.map(p => toTaalPart(p)),
+        key: key
       });
+
+      if (targetParts && targetParts.length) {
+        const [firstPart, ...rest] = targetParts;
+        prev.targetIcuExpressions.push({
+          id: tu.id,
+          parts: rest.map(p => toTaalPart(p)),
+          key: key
+        });
+      }
     } else {
       const translation: any = {
         translationId: tu.id,
@@ -57,6 +70,7 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
       translation.sourceParts = processedSourceParts;
       translation.targetParts = processedTargetParts;
       translation.icuExpressions = [];
+      translation.targetIcuExpressions = [];
       normalizedTUs.push(translation);
     }
   }

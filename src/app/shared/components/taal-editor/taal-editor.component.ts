@@ -16,7 +16,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class TaalEditorComponent implements OnInit {
 
     @Input() action$: Observable<{ index: number, action: string, data: any }>;
-    @Input() disabled: boolean;
+    @Input() readonly: boolean;
     @Input() index: number;
 
     @Input() parts: TaalPart[];
@@ -46,7 +46,18 @@ export class TaalEditorComponent implements OnInit {
 
     protected render() {
         if (this.isMounted()) {
-            this.taalEditorInstance = ReactDOM.render(React.createElement(TaalEditor, <TaalEditorProps>{ onChange: this.onChange, initialValue: { parts: this.parts, icuExpressions: this.icuExpressions } }), this.getRootDomNode());
+            this.taalEditorInstance = ReactDOM.render(
+                React.createElement(
+                    TaalEditor,
+
+                    <TaalEditorProps>{
+                        readonly: this.readonly,
+                        setRef: undefined,
+                        onChange: this.onChange,
+                        initialValue: { parts: this.parts, icuExpressions: this.icuExpressions }
+                    }),
+                    this.getRootDomNode()
+                );
         }
     }
 
@@ -56,14 +67,21 @@ export class TaalEditorComponent implements OnInit {
 
     ngAfterViewInit() {
         this.render();
-        if(!this.disabled) {
+        if(!this.readonly) {
             this.action$.pipe(
                 filter(_ => _.index === this.index),
                 takeUntil(this.ngUnsubscribe))
                 .subscribe(_ => {
-                    if (_.action === 'ADD_PLACEHOLDER') {
-                        let temp = this.taalEditorInstance;
-                        temp.addPlaceholder(_.data);
+                    switch(_.action) {
+                        case 'ADD_PLACEHOLDER': {
+                            this.taalEditorInstance.addPlaceholder(_.data.key, _.data.value);
+                            break;
+                        }
+                        case 'ADD_ICU_MESSAGE_REF': {
+                            debugger;
+                            this.taalEditorInstance.addIcuExpression(_.data.key, _.data.value);
+                            break;
+                        }
                     }
                 })
         }

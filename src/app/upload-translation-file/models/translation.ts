@@ -11,6 +11,7 @@ export interface Translation {
   sourceParts: ITaalMessagePart[];
   targetParts: ITaalMessagePart[];
   icuExpressions: ITaalIcuMessage[];
+  targetIcuExpressions: ITaalIcuMessage[];
   language: string;
   checksum: string;
 }

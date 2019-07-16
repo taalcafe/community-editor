@@ -4,4 +4,5 @@ export interface ITaalMessagePart {
   type: ParsedMessagePartType;
   meta?: string | null;
   value: any;
+  key: string;
 }
