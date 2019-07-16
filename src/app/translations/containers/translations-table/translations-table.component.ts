@@ -86,7 +86,7 @@ export class TranslationsTableComponent implements OnInit {
     let targetParts = convertFromSlate(this.editCache[index].data.draftTranslation);
     let sourceICUExpressions = this.editCache[index].data.parts.filter(_ => _.type === 'ICU_MESSAGE_REF');
     let targetICUExpressions = targetParts.parts.filter(_ => _.type === 'ICU_MESSAGE_REF');
-    let missingICUExpressions = sourceICUExpressions.filter(src => !targetICUExpressions.find(trg => trg.meta === src.meta))
+    let missingICUExpressions = sourceICUExpressions.filter(src => !targetICUExpressions.find(trg => trg.key === src.key))
 
     this.editCache[index].missingICUExpressions = missingICUExpressions;
   }
