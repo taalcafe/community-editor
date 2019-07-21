@@ -56,7 +56,7 @@
             (click)="undoEdit(i)"><i nz-icon type="undo"></i></button>
         </td>
       </tr>
-      <tr *ngIf="editCache[i].missingPlaceholders?.length || editCache[i].missingICUExpressions?.length" [nzExpand]="mapOfExpandData[i]">
+      <tr *ngIf="editCache[i].missingPlaceholders?.length || editCache[i].missingICUExpressions?.length || editCache[i].icuExpressionTree" [nzExpand]="mapOfExpandData[i]">
         <td></td>
         <td></td>
         <td></td>
@@ -65,8 +65,23 @@
             Missing Placeholders: <span class="placeholder" (click)="addPlaceholder(item, i)" *ngFor="let item of editCache[i].missingPlaceholders">{{ item.meta }}</span>
           </div>
           <div *ngIf="editCache[i].missingICUExpressions?.length">
-            Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item, i)" *ngFor="let item of editCache[i].missingICUExpressions">ICU Expression</span>
+            Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item, i)" *ngFor="let item of editCache[i].missingICUExpressions">&lt;ICU-Message-Ref_{{ item.id }}/&gt;</span>
           </div>
+          <ng-container *ngIf="editCache[i].icuExpressionTree">
+            <hr>
+            <h3>ICU Expressions</h3>
+            <div>
+              <div nz-row *ngFor="let icuExpression of editCache[i].icuExpressionTree; let i = index">
+                <div>
+                  <span class="placeholder">&lt;ICU-Message-Ref_{{ i }}/&gt;</span>
+                </div>
+                Cases: 
+                <div style="display: flex;" *ngFor="let case of icuExpression.cases">
+                  <span>{{ case.key }} =></span> <input nz-input [(ngModel)]="case.tokens" />
+                </div>
+              </div>
+            </div>
+          </ng-container>
         </td>
         <td></td>
       </tr>

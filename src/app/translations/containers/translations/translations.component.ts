@@ -90,7 +90,7 @@ export class TranslationsComponent implements OnInit {
   }
 
   saveTranslation(event: any) {
-    this.store.dispatch(new UpdateTranslation(event.index, event.target));
+    this.store.dispatch(new UpdateTranslation(event.index, event.target, event.icuExpressions));
   }
 
   download() {

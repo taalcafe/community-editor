@@ -6,6 +6,7 @@ import { saveAs } from 'file-saver/src/FileSaver';
 import { denormalizeInto } from 'src/app/upload-translation-file/handler/denormalizer';
 import ISO6391 from 'iso-639-1';
 import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
+import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 
 // Actions
 export class LoadTranslations {
@@ -15,7 +16,7 @@ export class LoadTranslations {
 
 export class UpdateTranslation {
   static readonly type = '[Translations] Update Translation';
-  constructor(public index: number, public target: TaalPart[]) {}
+  constructor(public index: number, public target: TaalPart[], public icuExpressions: ITaalMessagePart[]) {}
 }
 
 export class DownloadTranslationsFile {
@@ -95,9 +96,15 @@ export class TranslationsState {
           delete invalidTranslationsMap[updatedTranslation.translationId]
         }
       }
-
+      
       let missingTranslationsMap = getState().missingTranslationsMap
       updatedTranslation.targetParts = <ITaalMessagePart[]>action.target;
+
+      if(action.icuExpressions) {
+
+        updatedTranslation.targetIcuExpressions = [{id: '0', key: 1, parts: action.icuExpressions}]
+      }
+
       if (missingTranslationsMap[updatedTranslation.translationId]) {
         delete missingTranslationsMap[updatedTranslation.translationId]
       }

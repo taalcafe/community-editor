@@ -78,7 +78,6 @@ export class TaalEditorComponent implements OnInit {
                             break;
                         }
                         case 'ADD_ICU_MESSAGE_REF': {
-                            debugger;
                             this.taalEditorInstance.addIcuExpression(_.data.key, _.data.value);
                             break;
                         }

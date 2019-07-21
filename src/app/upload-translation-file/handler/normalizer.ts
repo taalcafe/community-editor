@@ -18,6 +18,7 @@ const toTaalPart = (p: ParsedMessagePart) => {
 
   if (p instanceof ParsedMessagePartPlaceholder) {
     part.meta = p.disp();
+    part.value = p.disp();
   }
 
   return part;
@@ -37,11 +38,10 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
     if (firstPart.type === ParsedMessagePartType.ICU_MESSAGE) {
       // Add as ICU message to previous translation
       const prev = normalizedTUs[normalizedTUs.length - 1];
-      const key = uuid();
       prev.icuExpressions.push({
         id: tu.id,
         parts: rest.map(p => toTaalPart(p)),
-        key: key
+        key: i
       });
 
       if (targetParts && targetParts.length) {
@@ -49,7 +49,7 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
         prev.targetIcuExpressions.push({
           id: tu.id,
           parts: rest.map(p => toTaalPart(p)),
-          key: key
+          key: i
         });
       }
     } else {
