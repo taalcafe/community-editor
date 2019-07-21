@@ -1,0 +1,50 @@
+<h1 i18n>This H1 has only the i18n attribute</h1>
+
+<h1 i18n="An introduction header for this sample">This H1 has i18n attribute and description: An introduction header for this sample</h1>
+
+<h1 i18n="site header|An introduction header with description">This H1 has i18n attribute, meaning (site header) and description. All occurrences of a text message that have the same meaning will have the same translation. A text message that is associated with different meanings can have different translations.</h1>
+
+<h1 i18n="@@introductionHeader">This H1 has custom ID: introductionHeader</h1>
+
+<h1 i18n="An introduction header for this sample@@introductionHeaderWithDesc">This H1 has custom ID: intruductionHeaderWithDesc and description</h1>
+
+<h1 i18n="site header with id meaning and description|An introduction header for this sample@@introductionHeaderWithDescAndMeaning">This H1 has custom ID: intruductionHeaderWithDescAndMeaning, description and meaning</h1>
+
+<img [src]="logo" i18n-title title="Image Title with attribute: i18n-title" />
+
+
+
+Pluralization categories include (depending on the language):
+
+    =0 (or any other number)
+    zero
+    one
+    two
+    few
+    many
+    other
+
+The first parameter is the key. It is bound to the component property (minutes), which determines the number of minutes.
+The second parameter identifies this as a plural translation type.
+The third parameter defines a pluralization pattern consisting of pluralization categories and their matching values.
+
+<span i18n>Updated {minutes, plural, =0 {just now} =1 {one minute ago} other {{{minutes}} minutes ago}}</span>
+
+
+
+Select among alternative text messages
+If your template needs to display different text messages depending on the value of a variable, you need to translate all of those alternative text messages.
+You can handle this with a select ICU expression. It is similar to the plural expressions except that you choose among alternative translations based on a string value instead of a number, and you define those string values.
+The following format message in the component template binds to the component's gender property, which outputs one of the following string values: "male", "female" or "other". The message maps those values to the appropriate translations:
+
+<span i18n>The author is {gender, select, male {male} female {female} other {other}}</span>
+
+
+
+Nesting plural and select ICU expressions
+
+<span i18n>Updated: {minutes, plural,
+  =0 {just now}
+  =1 {one minute ago}
+  other {{{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}
+</span>

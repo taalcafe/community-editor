@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UploadXHRArgs } from 'ng-zorro-antd';
-import { TranslationMessagesFileFactory, FORMAT_XLIFF20, ITransUnit } from 'src/app/ngx-lib/api';
+import { TranslationMessagesFileFactory, FORMAT_XLIFF20, ITransUnit, FORMAT_XLIFF12 } from 'src/app/ngx-lib/api';
 import { normalize } from '../../handler/normalizer';
 import { Store } from '@ngxs/store';
 import { LoadTranslations } from 'src/app/core/state/translations.state';
@@ -36,7 +36,7 @@ export class UploadTranslationFileComponent implements OnInit {
       const content = <string>fileReader.result;
 
       const file = factory.createFileFromFileContent(
-        FORMAT_XLIFF20,
+        FORMAT_XLIFF12,
         content,
         item.file.name,
         'utf8'
