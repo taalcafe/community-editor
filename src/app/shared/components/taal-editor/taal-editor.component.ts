@@ -15,14 +15,14 @@ import { filter, takeUntil } from 'rxjs/operators';
 })
 export class TaalEditorComponent implements OnInit {
 
-    @Input() action$: Observable<{ index: number, action: string, data: any }>;
+    @Input() action$: Observable<{ id: string, action: string, data: any }>;
     @Input() readonly: boolean;
-    @Input() index: number;
+    @Input() id: string;
 
     @Input() parts: TaalPart[];
     @Input() icuExpressions: TaalIcuExpression[];
 
-    @Output() taalEditorChange: EventEmitter<{value: Slate.Value, index: number }> = new EventEmitter();
+    @Output() taalEditorChange: EventEmitter<{value: Slate.Value, id: string }> = new EventEmitter();
 
     public rootDomID: string;
     @ViewChild('taalEditor') el: ElementRef;
@@ -30,14 +30,14 @@ export class TaalEditorComponent implements OnInit {
     taalEditorInstance: TaalEditor;
 
     ngUnsubscribe = new Subject<void>();
-        
+
     protected getRootDomNode() {
         const node = this.el.nativeElement;
         invariant(node, `Node '${this.rootDomID} not found!`);
         return node;
     }
     onChange = ($event: Slate.Value) => {
-        this.taalEditorChange.emit({value: $event, index: this.index})
+        this.taalEditorChange.emit({value: $event, id: this.id})
     }
 
     private isMounted(): boolean {
@@ -69,7 +69,7 @@ export class TaalEditorComponent implements OnInit {
         this.render();
         if(!this.readonly) {
             this.action$.pipe(
-                filter(_ => _.index === this.index),
+                filter(_ => _.id === this.id),
                 takeUntil(this.ngUnsubscribe))
                 .subscribe(_ => {
                     switch(_.action) {

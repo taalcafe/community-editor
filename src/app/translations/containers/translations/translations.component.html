@@ -11,75 +11,16 @@
         <ng-container *ngIf="(invalidTranslationsMap$ | async) as invalidTranslationsMap">
           <div style="margin-left: 30px; display: inline-block" *ngIf="getObjectKeysLength(invalidTranslationsMap) > 0"><span style="color: red">{{ getObjectKeysLength(invalidTranslationsMap) }}</span> translation(s) are invalid</div>
         </ng-container>
-        <nz-radio-group  nzSize="small" style="float: right; margin-top: -36px;" [(ngModel)]="view" name="view" [nzButtonStyle]="'solid'">
-          <label nz-radio-button nzValue="table"><i nz-icon nzType="table" nzTheme="outline"></i></label>
-          <label nz-radio-button nzValue="modern"><i nz-icon nzType="bars" nzTheme="outline"></i></label>
-        </nz-radio-group>
       </nz-page-header-content>
     </nz-page-header>
-    <ng-container [ngSwitch]="view">
-      <app-translations-table *ngSwitchCase="'table'"
+    <ng-container>
+      <app-translations-table
         [translations]="translations$ | async"
         [sourceLanguage]="sourceLanguage$ | async"
         [targetLanguage]="targetLanguage$ | async"
         [missingTranslationsMap]="missingTranslationsMap$ | async"
         [invalidTranslationsMap]="invalidTranslationsMap$ | async"
         (saveTranslation)="saveTranslation($event)"></app-translations-table>
-      <app-translations-modern *ngSwitchCase="'modern'"></app-translations-modern>
     </ng-container>
     <button class="download-button" nz-button nzType="primary" [nzSize]="'large'" nzShape="round" (click)="download()"><i nz-icon type="download"></i>Download as .xlf</button>
 </div>
-
-<nz-footer *ngIf="view === 'modern'">
-  <ul nz-menu [nzMode]="'horizontal'">
-    <li nz-menu-item (click)="openComments()"><i nz-icon nzType="message" nzTheme="outline"></i> Comments</li>
-    <li nz-menu-item (click)="openNotes()"><i nz-icon nzType="profile" nzTheme="outline"></i> Notes</li>
-    <li nz-menu-item (click)="flag()"><i nz-icon nzType="flag" nzTheme="outline"></i> Flag</li>
-    <li nz-menu-item (click)="postpone()"><i nz-icon nzType="bell" nzTheme="outline"></i> Postpone</li>
-  </ul>
-</nz-footer>
-
-<nz-drawer
-  [nzWidth]="330"
-  [nzClosable]="true"
-  [nzVisible]="showComments"
-  [nzPlacement]="'right'"
-  nzTitle="Comments"
-  (nzOnClose)="closeComments()">
-    <nz-list [nzDataSource]="comments" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
-      <ng-template #item let-item>
-        <nz-comment [nzAuthor]="item.author" [nzDatetime]="'1 day ago'">
-          <nz-avatar nz-comment-avatar nzIcon="user" [nzSrc]="item.avatar"></nz-avatar>
-          <nz-comment-content>
-            <p>{{ item.content }}</p>
-          </nz-comment-content>
-          <nz-comment-action>Reply to</nz-comment-action>
-        </nz-comment>
-      </ng-template>
-    </nz-list>
-
-    <form nz-form style="padding-top: 20px; border-top: 1px solid #e8e8e8;">
-      <nz-form-item style="margin-bottom: 0px;">
-        <nz-form-control>
-          <textarea nz-input rows="2" placeholder="Add a comment"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item style="margin-bottom: 0px;">
-        <nz-form-control style="display: flex; justify-content: space-around;">
-          <button nz-button type="button" style="margin: 0 5px;">Cancel</button>
-          <button nz-button nzType="primary" type="button" style="margin: 0 5px;">Comment</button>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
-</nz-drawer>
-
-<nz-drawer
-  [nzClosable]="true"
-  [nzVisible]="showNotes"
-  [nzPlacement]="'bottom'"
-  nzTitle="Notes"
-  (nzOnClose)="closeNotes()">
-  <p>Some contents...</p>
-  <p>Some contents...</p>
-  <p>Some contents...</p>
-</nz-drawer>

@@ -41,7 +41,7 @@ export class UploadTranslationFileComponent implements OnInit {
         item.file.name,
         'utf8'
       );
-      
+
       const transUnits: ITransUnit[] = [];
       file.forEachTransUnit(tu => transUnits.push(tu));
 

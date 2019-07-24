@@ -14,55 +14,19 @@ export class TranslationsComponent implements OnInit {
 
   @Select(state => state.translations.translations)
   translations$: Observable<Translation[]>;
+
   @Select(state => state.translations.sourceLanguage)
   sourceLanguage$: Observable<string>;
   @Select(state => state.translations.targetLanguage)
   targetLanguage$: Observable<string>;
+
   @Select(state => state.translations.translationsCount)
   translationsCount$: Observable<number>;
+
   @Select(state => state.translations.missingTranslationsMap)
   missingTranslationsMap$: Observable<{[id: string]: boolean;}>;
   @Select(state => state.translations.invalidTranslationsMap)
   invalidTranslationsMap$: Observable<{[id: string]: string;}>;
-
-  showComments: boolean;
-  showNotes: boolean;
-  view: string = 'table';
-
-  comments = [
-    {
-      author: 'Han Solo',
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      content:
-        'We supply a series of design principles, practical patterns and high quality design resources' +
-        '(Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-      datetime: new Date()
-    },
-    {
-      author: 'Han Solo',
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      content:
-        'We supply a series of design principles, practical patterns and high quality design resources' +
-        '(Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-      datetime: new Date()
-    },
-    {
-      author: 'Han Solo',
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      content:
-        'We supply a series of design principles, practical patterns and high quality design resources' +
-        '(Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-      datetime: new Date()
-    },
-    {
-      author: 'Han Solo',
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      content:
-        'We supply a series of design principles, practical patterns and high quality design resources' +
-        '(Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-      datetime: new Date()
-    }
-  ];
 
   constructor(private store: Store, private router: Router) { }
 
@@ -73,24 +37,8 @@ export class TranslationsComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  openComments() {
-    this.showComments = true;
-  }
-
-  openNotes() {
-    this.showNotes = true;
-  }
-
-  closeComments() {
-    this.showComments = false;
-  }
-
-  closeNotes() {
-    this.showNotes = false;
-  }
-
   saveTranslation(event: any) {
-    this.store.dispatch(new UpdateTranslation(event.index, event.target, event.icuExpressions));
+    this.store.dispatch(new UpdateTranslation(event.translationId, event.target, event.icuExpressions));
   }
 
   download() {

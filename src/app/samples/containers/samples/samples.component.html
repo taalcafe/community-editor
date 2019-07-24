@@ -43,8 +43,8 @@ The following format message in the component template binds to the component's 
 
 Nesting plural and select ICU expressions
 
-<span i18n>Updated: {minutes, plural,
-  =0 {just now}
-  =1 {one minute ago}
-  other {{{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}
+<span i18n>Updated: {minutes, plural, =0 {just now} =1 {one minute ago} other {{{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}
 </span>
+
+<p i18n="@@paragraphWithPlaceholders">This is placeholder {{ placeholder1 }} then {{ placeholder2 }} and repeating {{ placeholder1 }}</p>
+<p i18n="@@paragraphWithSomeNestedTags">This is a paragraph with a <a href="#">link</a> and a <span>span</span></p>

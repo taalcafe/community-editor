@@ -33,7 +33,8 @@ export class XliffMessageParser extends AbstractMessageParser {
             }
             if (id.startsWith('INTERPOLATION')) {
                 const index = this.parsePlaceholderIndexFromId(id);
-                message.addPlaceholder(index, null);
+                const displayValue = elementNode.getAttribute('equiv-text');
+                message.addPlaceholder(index, displayValue);
             } else if (id.startsWith('ICU')) {
                 const index = this.parseICUMessageRefIndexFromId(id);
                 message.addICUMessageRef(index, null);

@@ -21,49 +21,62 @@ export class TranslationsTableComponent implements OnInit {
   @Input() missingTranslationsMap: { [key: string]: boolean };
   @Input() invalidTranslationsMap: { [key: string]: any };
 
-  @Output() saveTranslation: EventEmitter<{index: number, target: TaalPart[], icuExpressions: ITaalIcuMessage[]}> = new EventEmitter();
+  @Output() saveTranslation: EventEmitter<{ translationId: string, target: TaalPart[], icuExpressions: ITaalIcuMessage[] }> = new EventEmitter();
 
   editCache: { [key: string]: any } = {};
   mapOfExpandData: { [key: string]: boolean } = {};
-  taalEditorActionDispatcher: Subject<{ index: number, action: string, data: any }> = new Subject();
+  taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }> = new Subject();
 
-  startEdit(index: number): void {
-    if (this.translations[index].targetIcuExpressions && this.translations[index].targetIcuExpressions.length) {
-      let result = messageformat.parse(this.translations[index].targetIcuExpressions[0].parts[0].value);
-      messageformat
-      this.editCache[index].icuExpressionTree = result;
-      this.editCache[index].icuExpressionTree
+  startEdit(translationId: string): void {
+    const translation = this.translations.find(_ => _.translationId === translationId);
+
+    if (translation.targetIcuExpressions && translation.targetIcuExpressions.length) {
+      let icuExpressionParts = translation.targetIcuExpressions[0].parts.map(_ => {
+        return _.type === 'PLACEHOLDER' ?  `__taal__${this.stripCurlyBraces(_.value)}__taal__` : _.value
+      });
+
+      let result = messageformat.parse(icuExpressionParts.join(''));
+      
+      this.editCache[translationId].icuExpressionTree = result;
+      this.editCache[translationId].icuExpressionTree
         .forEach(_ => _.cases.forEach(__ => __.tokens = __.tokens.join(', ')))
     }
 
-    this.editCache[index].edit = true;
-    this.mapOfExpandData[index] = true;
+    this.editCache[translationId].edit = true;
+    this.mapOfExpandData[translationId] = true;
   }
 
-  undoEdit(index: number): void {
-    this.editCache[index] = {
-      data: { ...this.translations[index] },
+  stripCurlyBraces(str: string) {
+    return str.replace(/{|}/g, '')
+  }
+
+  undoEdit(translationId: string): void {
+    const translation = this.translations.find(_ => _.translationId === translationId);
+
+    this.editCache[translationId] = {
+      data: { ...translation },
       edit: false,
       missingTranslations: [],
       missingICUExpressions: []
     };
-    this.mapOfExpandData[index] = false;
+    this.mapOfExpandData[translationId] = false;
   }
 
-  saveEdit(index: number): void {
-    this.editCache[index].edit = false;
-    let targetParts = convertFromSlate(this.editCache[index].data.draftTranslation)
+  saveEdit(translationId: string): void {
+    this.editCache[translationId].edit = false;
+    let targetParts = convertFromSlate(this.editCache[translationId].data.draftTranslation)
 
     let icuExpression;
-    if(this.editCache[index].icuExpressionTree) {
-      icuExpression = this.unparseICU(this.editCache[index].icuExpressionTree);
+    if (this.editCache[translationId].icuExpressionTree) {
+      icuExpression = this.unparseICU(this.editCache[translationId].icuExpressionTree);
     } 
+
     this.saveTranslation.emit({
-      index,
+      translationId,
       target: targetParts.parts,
       icuExpressions: [icuExpression]
     })
-    this.mapOfExpandData[index] = false;
+    this.mapOfExpandData[translationId] = false;
   }
 
   unparseICU(expressionTree: any): ITaalMessagePart {
@@ -84,61 +97,78 @@ export class TranslationsTableComponent implements OnInit {
 
   updateEditCache(): void {
 
-    this.translations.forEach((item, i) => {
-      this.editCache[i] = {
+    this.translations.forEach(item => {
+      this.editCache[item.translationId] = {
         edit: false,
         data: { ...item },
-        missingPlaceholders: []
+        missingPlaceholders: [],
+        missingICUExpressions: []
       };
     });
   }
 
   taalEditorChange(event: any) {
-    this.editCache[event.index].data.draftTranslation = event.value;
+    this.editCache[event.id].data.draftTranslation = event.value;
 
-    this.updateMissingPlaceholders(event.index);
-    this.updateMissingICUExpressions(event.index);
+    this.updateMissingPlaceholders(event.id);
+    this.updateMissingICUExpressions(event.id);
   }
 
-  addICUExpression(icuExpression: any, index: number) {
+  addICUExpression(icuExpression: any, translationId: string) {
     this.taalEditorActionDispatcher.next({
-      index,
+      id: translationId,
       action: 'ADD_ICU_MESSAGE_REF',
       data: { key: icuExpression.id, value: `<ICU-Message-Ref_${icuExpression.id}/>` }
     });
-    this.updateMissingICUExpressions(index);
+    this.updateMissingICUExpressions(translationId);
   }
 
-  addPlaceholder(placeholder: any, index: number) {
+  addPlaceholder(placeholder: any, translationId: string) {
     this.taalEditorActionDispatcher.next({
-      index,
+      id: translationId,
       action: 'ADD_PLACEHOLDER',
       data: { key: placeholder.key, value: placeholder.value }
     });
-    this.updateMissingPlaceholders(index);
+    this.updateMissingPlaceholders(translationId);
   }
 
-  updateMissingICUExpressions(index: number) {
-    let data = this.editCache[index].data;
+  updateMissingICUExpressions(translationId: string) {
+    let data = this.editCache[translationId].data;
     let targetParts = convertFromSlate(data.draftTranslation);
     let targetICUExpressions = targetParts.parts.filter(_ => _.type === 'ICU_MESSAGE_REF');
 
     let missingICUExpressions = data.targetIcuExpressions.filter(src => {
       return !targetICUExpressions.find(trg => {
-        return trg.value === `<ICU-Message-Ref_${src.id}/>`
+        return trg.value === `<ICU-Message-Ref_${src.key}/>`
       })
     })
 
-    this.editCache[index].missingICUExpressions = missingICUExpressions;
+    this.editCache[translationId].missingICUExpressions = missingICUExpressions;
   }
 
-  updateMissingPlaceholders(index: number) {
-    let targetParts = convertFromSlate(this.editCache[index].data.draftTranslation);
-    let sourcePlaceholders = this.editCache[index].data.parts.filter(_ => _.type === 'PLACEHOLDER');
+  updateMissingPlaceholders(translationId: string) {
+    let targetParts = convertFromSlate(this.editCache[translationId].data.draftTranslation);
+    let sourcePlaceholders = this.editCache[translationId].data.parts.filter(_ => _.type === 'PLACEHOLDER');
     let targetPlaceholders = targetParts.parts.filter(_ => _.type === 'PLACEHOLDER');
-    let missingPlaceholders = sourcePlaceholders.filter(src => !targetPlaceholders.find(trg => trg.value === src.value))
+    let index = 0;
 
-    this.editCache[index].missingPlaceholders = missingPlaceholders;
+    const missingPlaceholders = [];
+    while (index < sourcePlaceholders.length) {
+      const currentValue = sourcePlaceholders[index].value;
+      const sourcePlaceholdersCount = sourcePlaceholders.filter(_ => _.value === currentValue).length;
+      const targetPlaceholdersCount = targetPlaceholders.filter(_ => _.value === currentValue).length;
+      const missingPlaceholdersCount = missingPlaceholders.filter(_ => _.value === currentValue).length
+      const countDiff = sourcePlaceholdersCount - targetPlaceholdersCount;
+
+      if (countDiff > missingPlaceholdersCount) missingPlaceholders.push(sourcePlaceholders[index]);
+      index++;
+    }
+    // let missingPlaceholders = sourcePlaceholders.filter(src => {
+    //   console.log(sourcePlaceholders);
+    //   return !targetPlaceholders.find(trg => trg.value === src.value)
+    // })
+
+    this.editCache[translationId].missingPlaceholders = missingPlaceholders;
   }
 
   ngOnInit(): void {

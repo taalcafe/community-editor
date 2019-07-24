@@ -8,7 +8,6 @@ export interface Translation {
   meaning: string | null;
   description: string | null;
   parts: ITaalMessagePart[];
-  sourceParts: ITaalMessagePart[];
   targetParts: ITaalMessagePart[];
   icuExpressions: ITaalIcuMessage[];
   targetIcuExpressions: ITaalIcuMessage[];

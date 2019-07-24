@@ -10,6 +10,9 @@ export class SamplesComponent implements OnInit {
   logo: string;
   minutes: number;
   gender: string;
+
+  placeholder1: string;
+  placeholder2: string;
   
   constructor() { }
 

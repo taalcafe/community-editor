@@ -38,20 +38,22 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
     if (firstPart.type === ParsedMessagePartType.ICU_MESSAGE) {
       // Add as ICU message to previous translation
       const prev = normalizedTUs[normalizedTUs.length - 1];
+      const key = prev.icuExpressions.length;
       prev.icuExpressions.push({
         id: tu.id,
         parts: rest.map(p => toTaalPart(p)),
-        key: i
+        key
       });
 
-      if (targetParts && targetParts.length) {
-        const [firstPart, ...rest] = targetParts;
+      {
+        const [firstPart, ...rest] = (targetParts && targetParts.length) ? targetParts : parts;
         prev.targetIcuExpressions.push({
           id: tu.id,
           parts: rest.map(p => toTaalPart(p)),
-          key: i
+          key
         });
       }
+      
     } else {
       const translation: any = {
         translationId: tu.id,
@@ -67,7 +69,6 @@ export const normalize = (transUnits: ITransUnit[]): Translation[] => {
       processedTargetParts = targetNormalized.parts().map(p => toTaalPart(p));
 
       translation.parts = processedSourceParts;
-      translation.sourceParts = processedSourceParts;
       translation.targetParts = processedTargetParts;
       translation.icuExpressions = [];
       translation.targetIcuExpressions = [];

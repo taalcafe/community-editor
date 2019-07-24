@@ -16,7 +16,7 @@ export class LoadTranslations {
 
 export class UpdateTranslation {
   static readonly type = '[Translations] Update Translation';
-  constructor(public index: number, public target: TaalPart[], public icuExpressions: ITaalMessagePart[]) {}
+  constructor(public translationId: string, public target: TaalPart[], public icuExpressions: ITaalMessagePart[]) {}
 }
 
 export class DownloadTranslationsFile {
@@ -78,7 +78,7 @@ export class TranslationsState {
     @Action(UpdateTranslation)
     updateTranslation({ getState, patchState }, action: UpdateTranslation) {
       let translations = getState().translations;
-      let updatedTranslation: Translation = translations[action.index];
+      let updatedTranslation: Translation = translations.find(_ => _.translationId === action.translationId);
 
       let invalidTranslationsMap = getState().invalidTranslationsMap
 
@@ -89,25 +89,23 @@ export class TranslationsState {
       let targetPlaceholdersCount = action.target.filter(_ => _.type === 'PLACEHOLDER').length;
       let icuExpressionsCountMatch = sourceICUExpressionsCount === targetICUExpressionsCount;
       let placeholdersCountMatch = sourcePlaceholdersCount === targetPlaceholdersCount;
+
+
       if(!action.target || !icuExpressionsCountMatch || !placeholdersCountMatch) {
           invalidTranslationsMap[updatedTranslation.translationId] = 'Missing translation parts';
       } else {
-        if (updatedTranslation[updatedTranslation.translationId]) {
           delete invalidTranslationsMap[updatedTranslation.translationId]
-        }
       }
       
       let missingTranslationsMap = getState().missingTranslationsMap
       updatedTranslation.targetParts = <ITaalMessagePart[]>action.target;
 
-      if(action.icuExpressions) {
+      // if(action.icuExpressions) {
 
-        updatedTranslation.targetIcuExpressions = [{id: '0', key: 1, parts: action.icuExpressions}]
-      }
+      //   updatedTranslation.targetIcuExpressions = [{id: '0', parts: action.icuExpressions}]
+      // }
 
-      if (missingTranslationsMap[updatedTranslation.translationId]) {
-        delete missingTranslationsMap[updatedTranslation.translationId]
-      }
+      delete missingTranslationsMap[updatedTranslation.translationId]
 
       patchState({ missingTranslationsMap, invalidTranslationsMap })
     }
