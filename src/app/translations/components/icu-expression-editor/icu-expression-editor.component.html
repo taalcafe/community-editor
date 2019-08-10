@@ -1,0 +1,12 @@
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+  <div style="margin-right: 10px;">{{ case.key }} =></div>
+  <app-taal-editor style="flex-grow: 1;"
+    (click)="startEdit($event)"
+    (taalEditorChange)="taalEditorChange($event)"              
+    [id]="case.key"
+    [parts]="case.parts"
+    [action$]="taalEditorActionDispatcher.asObservable()"></app-taal-editor>
+</div>
+<div nz-row *ngIf="missingPlaceholders?.length" style="margin-top: 10px; padding-left: 40px;">
+  Missing Placeholders: <span class="placeholder" (click)="addPlaceholder(item)" *ngFor="let item of missingPlaceholders">{{ item.meta }}</span>
+</div>

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { convertFromSlate, TaalPart } from 'taal-editor';
-import produce from 'immer';
 import { Subject } from 'rxjs';
 import * as messageformat from 'messageformat-parser';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
@@ -30,8 +29,8 @@ export class TranslationsTableComponent implements OnInit {
   startEdit(translationId: string): void {
     const translation = this.translations.find(_ => _.translationId === translationId);
 
-    if (translation.targetIcuExpressions && translation.targetIcuExpressions.length) {
-      let icuExpressionParts = translation.targetIcuExpressions[0].parts.map(_ => {
+    if (translation.icuExpressions && translation.icuExpressions.length) {
+      let icuExpressionParts = translation.icuExpressions[0].parts.map(_ => {
         return _.type === 'PLACEHOLDER' ?  `__taal__${this.stripCurlyBraces(_.value)}__taal__` : _.value
       });
 
@@ -39,9 +38,53 @@ export class TranslationsTableComponent implements OnInit {
       
       this.editCache[translationId].icuExpressionTree = result;
       this.editCache[translationId].icuExpressionTree
-        .forEach(_ => _.cases.forEach(__ => __.tokens = __.tokens.join(', ')))
-    }
+        .forEach(treeNode => treeNode.cases.forEach(_ => {
+          const parts = []
+          
+          _.tokens.forEach(token => {
+            let placeholderRegex = /__taal__(\w+)__taal__/;
+            let remainingToken = token;
+            while(placeholderRegex.test(remainingToken)) {
+              const match = placeholderRegex.exec(token);
+              const placeholder = match[0];
+              const placeholderValue = match[1];
+              if(match.index !== 0) {
+                const beginning = token.substr(0, match.index)
+                parts.push({
+                  type: ParsedMessagePartType.TEXT,
+                  meta: beginning,
+                  value: beginning,
+                  key: beginning
+                })
+              }
 
+              parts.push({
+                type: ParsedMessagePartType.PLACEHOLDER,
+                meta: `{{${placeholderValue}}}`,
+                value: `{{${placeholderValue}}}`,
+                key: `{{${placeholderValue}}}`
+              })
+
+              remainingToken = remainingToken.substring(match.index + placeholder.length, remainingToken.length)
+            }
+
+            if(remainingToken.length) {
+              parts.push({
+                type: ParsedMessagePartType.TEXT,
+                meta: remainingToken,
+                value: remainingToken,
+                key: remainingToken
+              })
+            }
+            
+            return parts
+          })
+
+          _.validationParts = parts;
+          _.parts = parts;
+        }))
+    }
+    
     this.editCache[translationId].edit = true;
     this.mapOfExpandData[translationId] = true;
   }
@@ -118,7 +161,7 @@ export class TranslationsTableComponent implements OnInit {
     this.taalEditorActionDispatcher.next({
       id: translationId,
       action: 'ADD_ICU_MESSAGE_REF',
-      data: { key: icuExpression.id, value: `<ICU-Message-Ref_${icuExpression.id}/>` }
+      data: { key: icuExpression.id, value: `<ICU-Message-Ref_${icuExpression.key}/>` }
     });
     this.updateMissingICUExpressions(translationId);
   }
@@ -163,10 +206,6 @@ export class TranslationsTableComponent implements OnInit {
       if (countDiff > missingPlaceholdersCount) missingPlaceholders.push(sourcePlaceholders[index]);
       index++;
     }
-    // let missingPlaceholders = sourcePlaceholders.filter(src => {
-    //   console.log(sourcePlaceholders);
-    //   return !targetPlaceholders.find(trg => trg.value === src.value)
-    // })
 
     this.editCache[translationId].missingPlaceholders = missingPlaceholders;
   }

@@ -3,8 +3,8 @@
   <thead>
     <tr>
       <th nzWidth="32px"></th>
-      <th nzWidth="25%">Key</th>
-      <th nzWidth="20%">Source (<b>{{ sourceLanguage }}</b>)</th>
+      <th nzWidth="15%">Key</th>
+      <th nzWidth="30%">Source (<b>{{ sourceLanguage }}</b>)</th>
       <th>Target (<b>{{ targetLanguage }}</b>)</th>
       <th nzWidth="90px"></th>
     </tr>
@@ -42,6 +42,7 @@
         <td>
           <button
             style="display: inline-block;"
+            [nzSize]="'small'"
             nz-button
             nzType="primary"
             nzGhost
@@ -49,6 +50,7 @@
             (click)="saveEdit(data.translationId)"><i nz-icon type="check"></i></button>
             <button
             style="display: inline-block; margin-left: 8px;"
+            [nzSize]="'small'"
             nz-button
             nzType="danger"
             nzGhost
@@ -68,16 +70,17 @@
             Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item, data.translationId)" *ngFor="let item of editCache[data.translationId]?.missingICUExpressions">&lt;ICU-Message-Ref_{{ item.key }}/&gt;</span>
           </div>
           <ng-container *ngIf="editCache[data.translationId]?.icuExpressionTree">
-            <hr>
-            <h3>ICU Expressions</h3>
-            <div>
+            <div style="background-color: #e8e8e8; margin-top: 15px; margin-bottom: 10px; padding: 10px;">
+              <h3 style="margin-bottom: 0; color: dimgrey;">ICU Expressions</h3>
+            </div>
+            <div style="font-size: 12px;">
               <div nz-row *ngFor="let icuExpression of editCache[data.translationId]?.icuExpressionTree; let i = index">
                 <div>
                   <span class="placeholder">&lt;ICU-Message-Ref_{{ i }}/&gt;</span>
                 </div>
                 Cases: 
-                <div style="display: flex;" *ngFor="let case of icuExpression.cases">
-                  <span>{{ case.key }} =></span> <input nz-input [(ngModel)]="case.tokens" />
+                <div *ngFor="let case of icuExpression.cases">
+                  <app-icu-expression-editor [case]="case"></app-icu-expression-editor>
                 </div>
               </div>
             </div>

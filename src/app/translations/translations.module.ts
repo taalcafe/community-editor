@@ -6,9 +6,11 @@ import { RouterModule } from '@angular/router';
 import { TranslationsTableComponent } from './containers/translations-table/translations-table.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { IcuExpressionEditorComponent } from './components/icu-expression-editor/icu-expression-editor.component';
+import { TranslationTableRowComponent } from './components/translation-table-row/translation-table-row.component';
 
 @NgModule({
-  declarations: [TranslationsComponent, TranslationsTableComponent],
+  declarations: [TranslationsComponent, TranslationsTableComponent, IcuExpressionEditorComponent, TranslationTableRowComponent],
   imports: [
     CommonModule,
     NgZorroAntdModule,
