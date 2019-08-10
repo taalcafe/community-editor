@@ -8,9 +8,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { IcuExpressionEditorComponent } from './components/icu-expression-editor/icu-expression-editor.component';
 import { TranslationTableRowComponent } from './components/translation-table-row/translation-table-row.component';
+import { TargetTranslationExtra } from './components/target-translation-extra/target-translation-extra.component';
 
 @NgModule({
-  declarations: [TranslationsComponent, TranslationsTableComponent, IcuExpressionEditorComponent, TranslationTableRowComponent],
+  declarations: [TranslationsComponent, TranslationsTableComponent, IcuExpressionEditorComponent, TranslationTableRowComponent, TargetTranslationExtra],
   imports: [
     CommonModule,
     NgZorroAntdModule,

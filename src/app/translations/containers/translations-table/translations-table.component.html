@@ -10,84 +10,13 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let data of translationsTable.data">
-      <tr [ngClass]="{ 'invalid-row': invalidTranslationsMap[data.translationId]}">
-        <td>
-          <i *ngIf="!missingTranslationsMap[data.translationId] && !invalidTranslationsMap[data.translationId]" style="color: rgb(82, 196, 26)" nz-icon nzType="check-circle" nzTheme="outline"></i>
-          <i *ngIf="missingTranslationsMap[data.translationId]" style="color: rgba(0, 0, 0, 0.65);" nz-icon nzType="ellipsis" nzTheme="outline"></i>
-          <i *ngIf="invalidTranslationsMap[data.translationId]" style="color: red" nz-icon nzType="exclamation-circle" nzTheme="outline"></i>
-        </td>
-        <td>
-          <span style="max-width: 100px">{{ data.translationId.length > 28 ? (data.translationId | slice:0:28) + '...' : data.translationId }}</span>
-        </td>
-        <td>
-          <ng-container>
-            <app-taal-editor
-              [readonly]="true"
-              (taalEditorChange)="taalEditorChange($event)"
-              [id]="data.translationId"
-              [parts]="data.parts"
-              [icuExpressions]="data.icuExpressions"></app-taal-editor>
-          </ng-container>
-        </td>
-        <td>
-          <app-taal-editor
-            (click)="startEdit(data.translationId)"
-            (taalEditorChange)="taalEditorChange($event)"              
-            [id]="data.translationId"
-            [parts]="data.targetParts"
-            [action$]="taalEditorActionDispatcher.asObservable()"
-            [icuExpressions]="data.icuExpressions"></app-taal-editor>
-        </td>
-        <td>
-          <button
-            style="display: inline-block;"
-            [nzSize]="'small'"
-            nz-button
-            nzType="primary"
-            nzGhost
-            [disabled]="!editCache[data.translationId]?.edit"
-            (click)="saveEdit(data.translationId)"><i nz-icon type="check"></i></button>
-            <button
-            style="display: inline-block; margin-left: 8px;"
-            [nzSize]="'small'"
-            nz-button
-            nzType="danger"
-            nzGhost
-            [disabled]="!editCache[data.translationId]?.edit"
-            (click)="undoEdit(data.translationId)"><i nz-icon type="undo"></i></button>
-        </td>
-      </tr>
-      <tr *ngIf="editCache[data.translationId]?.missingPlaceholders?.length || editCache[data.translationId]?.missingICUExpressions?.length || editCache[data.translationId]?.icuExpressionTree" [nzExpand]="mapOfExpandData[data.translationId]">
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>
-          <div *ngIf="editCache[data.translationId]?.missingPlaceholders?.length">
-            Missing Placeholders: <span class="placeholder" (click)="addPlaceholder(item, data.translationId)" *ngFor="let item of editCache[data.translationId]?.missingPlaceholders">{{ item.meta }}</span>
-          </div>
-          <div *ngIf="editCache[data.translationId]?.missingICUExpressions?.length">
-            Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item, data.translationId)" *ngFor="let item of editCache[data.translationId]?.missingICUExpressions">&lt;ICU-Message-Ref_{{ item.key }}/&gt;</span>
-          </div>
-          <ng-container *ngIf="editCache[data.translationId]?.icuExpressionTree">
-            <div style="background-color: #e8e8e8; margin-top: 15px; margin-bottom: 10px; padding: 10px;">
-              <h3 style="margin-bottom: 0; color: dimgrey;">ICU Expressions</h3>
-            </div>
-            <div style="font-size: 12px;">
-              <div nz-row *ngFor="let icuExpression of editCache[data.translationId]?.icuExpressionTree; let i = index">
-                <div>
-                  <span class="placeholder">&lt;ICU-Message-Ref_{{ i }}/&gt;</span>
-                </div>
-                Cases: 
-                <div *ngFor="let case of icuExpression.cases">
-                  <app-icu-expression-editor [case]="case"></app-icu-expression-editor>
-                </div>
-              </div>
-            </div>
-          </ng-container>
-        </td>
-        <td></td>
-      </tr>
+    <ng-container *ngFor="let data of translationsTable.data; let index = i">
+      <tr translationTableRow
+        [data]="data"
+        [editCache]="editCache[data.translationId]"
+        [missingTranslation]="missingTranslationsMap[data.translationId]"
+        [invalidTranslation]="invalidTranslationsMap[data.translationId]"
+        (startEdit)="startEdit($event)"></tr>
     </ng-container>
   </tbody>
 </nz-table>

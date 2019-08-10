@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { convertFromSlate, TaalPart } from 'taal-editor';
-import { Subject } from 'rxjs';
 import * as messageformat from 'messageformat-parser';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
@@ -24,7 +23,6 @@ export class TranslationsTableComponent implements OnInit {
 
   editCache: { [key: string]: any } = {};
   mapOfExpandData: { [key: string]: boolean } = {};
-  taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }> = new Subject();
 
   startEdit(translationId: string): void {
     const translation = this.translations.find(_ => _.translationId === translationId);
@@ -148,66 +146,6 @@ export class TranslationsTableComponent implements OnInit {
         missingICUExpressions: []
       };
     });
-  }
-
-  taalEditorChange(event: any) {
-    this.editCache[event.id].data.draftTranslation = event.value;
-
-    this.updateMissingPlaceholders(event.id);
-    this.updateMissingICUExpressions(event.id);
-  }
-
-  addICUExpression(icuExpression: any, translationId: string) {
-    this.taalEditorActionDispatcher.next({
-      id: translationId,
-      action: 'ADD_ICU_MESSAGE_REF',
-      data: { key: icuExpression.id, value: `<ICU-Message-Ref_${icuExpression.key}/>` }
-    });
-    this.updateMissingICUExpressions(translationId);
-  }
-
-  addPlaceholder(placeholder: any, translationId: string) {
-    this.taalEditorActionDispatcher.next({
-      id: translationId,
-      action: 'ADD_PLACEHOLDER',
-      data: { key: placeholder.key, value: placeholder.value }
-    });
-    this.updateMissingPlaceholders(translationId);
-  }
-
-  updateMissingICUExpressions(translationId: string) {
-    let data = this.editCache[translationId].data;
-    let targetParts = convertFromSlate(data.draftTranslation);
-    let targetICUExpressions = targetParts.parts.filter(_ => _.type === 'ICU_MESSAGE_REF');
-
-    let missingICUExpressions = data.targetIcuExpressions.filter(src => {
-      return !targetICUExpressions.find(trg => {
-        return trg.value === `<ICU-Message-Ref_${src.key}/>`
-      })
-    })
-
-    this.editCache[translationId].missingICUExpressions = missingICUExpressions;
-  }
-
-  updateMissingPlaceholders(translationId: string) {
-    let targetParts = convertFromSlate(this.editCache[translationId].data.draftTranslation);
-    let sourcePlaceholders = this.editCache[translationId].data.parts.filter(_ => _.type === 'PLACEHOLDER');
-    let targetPlaceholders = targetParts.parts.filter(_ => _.type === 'PLACEHOLDER');
-    let index = 0;
-
-    const missingPlaceholders = [];
-    while (index < sourcePlaceholders.length) {
-      const currentValue = sourcePlaceholders[index].value;
-      const sourcePlaceholdersCount = sourcePlaceholders.filter(_ => _.value === currentValue).length;
-      const targetPlaceholdersCount = targetPlaceholders.filter(_ => _.value === currentValue).length;
-      const missingPlaceholdersCount = missingPlaceholders.filter(_ => _.value === currentValue).length
-      const countDiff = sourcePlaceholdersCount - targetPlaceholdersCount;
-
-      if (countDiff > missingPlaceholdersCount) missingPlaceholders.push(sourcePlaceholders[index]);
-      index++;
-    }
-
-    this.editCache[translationId].missingPlaceholders = missingPlaceholders;
   }
 
   ngOnInit(): void {

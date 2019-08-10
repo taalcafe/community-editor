@@ -21,7 +21,7 @@ export class IcuExpressionEditorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.updateMissingPlaceholders();
+    
   }
 
   startEdit(event: any): void {

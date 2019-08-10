@@ -1,3 +1,53 @@
-<p>
-  translation-table-row works!
-</p>
+<td>
+    <i *ngIf="!missingTranslation && !invalidTranslation" style="color: rgb(82, 196, 26)" nz-icon nzType="check-circle" nzTheme="outline"></i>
+    <i *ngIf="missingTranslation" style="color: rgba(0, 0, 0, 0.65);" nz-icon nzType="ellipsis" nzTheme="outline"></i>
+    <i *ngIf="invalidTranslation" style="color: red" nz-icon nzType="exclamation-circle" nzTheme="outline"></i>
+  </td>
+  <td>
+    <span style="max-width: 100px">{{ data.translationId.length > 28 ? (data.translationId | slice:0:28) + '...' : data.translationId }}</span>
+  </td>
+  <td>
+    <ng-container>
+      <app-taal-editor
+        [readonly]="true"
+        (taalEditorChange)="taalEditorChange($event)"
+        [id]="data.translationId"
+        [parts]="data.parts"
+        [icuExpressions]="data.icuExpressions"></app-taal-editor>
+    </ng-container>
+  </td>
+  <td>
+    <app-taal-editor
+      (click)="startEditFn()"
+      (taalEditorChange)="taalEditorChange($event)"              
+      [id]="data.translationId"
+      [parts]="data.targetParts"
+      [action$]="taalEditorActionDispatcher.asObservable()"
+      [icuExpressions]="data.icuExpressions"></app-taal-editor>
+
+      <div *ngIf="editCache?.missingPlaceholders?.length || editCache?.missingICUExpressions?.length || editCache?.icuExpressionTree">
+        <app-target-translation-extra
+          [editCache]="editCache"
+          [taalEditorActionDispatcher]="taalEditorActionDispatcher"
+          (updateMissingPlaceholders)="updateMissingPlaceholders()"
+          (updateMissingICUExpressions)="updateMissingICUExpressions()"></app-target-translation-extra>
+      </div>
+  </td>
+  <td>
+    <button
+      style="display: inline-block;"
+      [nzSize]="'small'"
+      nz-button
+      nzType="primary"
+      nzGhost
+      [disabled]="!editCache.edit"
+      (click)="saveEditFn()"><i nz-icon type="check"></i></button>
+      <button
+      style="display: inline-block; margin-left: 8px;"
+      [nzSize]="'small'"
+      nz-button
+      nzType="danger"
+      nzGhost
+      [disabled]="!editCache.edit"
+      (click)="undoEditFn()"><i nz-icon type="undo"></i></button>
+  </td>
