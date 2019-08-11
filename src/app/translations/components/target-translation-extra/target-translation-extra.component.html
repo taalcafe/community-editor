@@ -9,11 +9,11 @@
     <h3 style="margin-bottom: 0; color: dimgrey;">ICU Expressions</h3>
   </div>
   <div style="font-size: 12px;">
-    <div nz-row *ngFor="let icuExpression of editCache.icuExpressionTree; let i = index">
-      <div>
+    <div style="margin-top: 25px; border: 1px solid lightgrey; padding: 10px; border-radius: 4px;"
+      nz-row *ngFor="let icuExpression of editCache.icuExpressionTree; let i = index">
+      <div style="margin-top: -22px;">
         <span class="placeholder">&lt;ICU-Message-Ref_{{ i }}/&gt;</span>
       </div>
-      Cases: 
       <div *ngFor="let case of icuExpression.cases">
         <app-icu-expression-editor [case]="case"></app-icu-expression-editor>
       </div>
