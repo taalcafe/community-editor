@@ -103,21 +103,21 @@ export class TranslationsTableComponent implements OnInit {
     this.mapOfExpandData[translationId] = false;
   }
 
-  saveEdit(translationId: string): void {
-    this.editCache[translationId].edit = false;
-    let targetParts = convertFromSlate(this.editCache[translationId].data.draftTranslation)
+  saveEdit(payload: { translationId: string, draft: any }): void {
+    this.editCache[payload.translationId].edit = false;
+    let targetParts = convertFromSlate(payload.draft)
 
     let icuExpression;
-    if (this.editCache[translationId].icuExpressionTree) {
-      icuExpression = this.unparseICU(this.editCache[translationId].icuExpressionTree);
+    if (this.editCache[payload.translationId].icuExpressionTree) {
+      icuExpression = this.unparseICU(this.editCache[payload.translationId].icuExpressionTree);
     } 
 
     this.saveTranslation.emit({
-      translationId,
+      translationId: payload.translationId,
       target: targetParts.parts,
       icuExpressions: [icuExpression]
     })
-    this.mapOfExpandData[translationId] = false;
+    this.mapOfExpandData[payload.translationId] = false;
   }
 
   unparseICU(expressionTree: any): ITaalMessagePart {

@@ -16,7 +16,9 @@
         [editCache]="editCache[data.translationId]"
         [missingTranslation]="missingTranslationsMap[data.translationId]"
         [invalidTranslation]="invalidTranslationsMap[data.translationId]"
-        (startEdit)="startEdit($event)"></tr>
+        (startEdit)="startEdit($event)"
+        (saveEdit)="saveEdit($event)"
+        (undoEdit)="undoEdit($event)"></tr>
     </ng-container>
   </tbody>
 </nz-table>

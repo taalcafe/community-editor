@@ -14,6 +14,8 @@ export class TranslationTableRowComponent implements OnInit {
   @Input() missingTranslation: boolean;
   @Input() invalidTranslation: boolean;
   @Output() startEdit: EventEmitter<string> = new EventEmitter();
+  @Output() saveEdit: EventEmitter<{ translationId: string, draft: any }> = new EventEmitter();
+  @Output() undoEdit: EventEmitter<string> = new EventEmitter();
 
   taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }> = new Subject();
 
@@ -68,11 +70,11 @@ export class TranslationTableRowComponent implements OnInit {
   }
 
   saveEditFn() {
-    // debugger;
+    this.saveEdit.emit({ translationId: this.editCache.data.translationId, draft: this.draft })
   }
 
   undoEditFn() {
-    // debugger;
+    this.saveEdit.emit(this.editCache.data.translationId);
   }
 
   startEditFn() {
