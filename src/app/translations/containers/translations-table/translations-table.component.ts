@@ -103,9 +103,8 @@ export class TranslationsTableComponent implements OnInit {
     this.mapOfExpandData[translationId] = false;
   }
 
-  saveEdit(payload: { translationId: string, draft: any }): void {
+  saveEdit(payload: { translationId: string, editCache: any }): void {
     this.editCache[payload.translationId].edit = false;
-    let targetParts = convertFromSlate(payload.draft)
 
     let icuExpression;
     if (this.editCache[payload.translationId].icuExpressionTree) {
@@ -114,7 +113,7 @@ export class TranslationsTableComponent implements OnInit {
 
     this.saveTranslation.emit({
       translationId: payload.translationId,
-      target: targetParts.parts,
+      target: payload.editCache['targetParts'].parts,
       icuExpressions: [icuExpression]
     })
     this.mapOfExpandData[payload.translationId] = false;

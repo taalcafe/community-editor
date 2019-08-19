@@ -15,7 +15,7 @@ export const denormalizeInto = (
     const translation = translations.find(t => t.translationId === tu.id);
     let parts: ITaalMessagePart[] = null;
     if (translation) {
-      // parts = translation.targetParts;
+      parts = translation.targetParts;
       lastTranslation = translation;
     } else {
       console.debug(`${tu.id} must be ICU expression.`);

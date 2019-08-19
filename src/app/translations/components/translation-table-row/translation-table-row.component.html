@@ -29,8 +29,10 @@
         <app-target-translation-extra
           [editCache]="editCache"
           [taalEditorActionDispatcher]="taalEditorActionDispatcher"
+          [save$]="save.asObservable()"
           (updateMissingPlaceholders)="updateMissingPlaceholders()"
-          (updateMissingICUExpressions)="updateMissingICUExpressions()"></app-target-translation-extra>
+          (updateMissingICUExpressions)="updateMissingICUExpressions()"
+          (updateICUExpressions)="updateICUExpressions($event)"></app-target-translation-extra>
       </div>
   </td>
   <td style="vertical-align: top;">

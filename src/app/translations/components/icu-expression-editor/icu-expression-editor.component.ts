@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { convertFromSlate, TaalPart } from 'taal-editor';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-icu-expression-editor',
@@ -10,6 +11,7 @@ import { convertFromSlate, TaalPart } from 'taal-editor';
 export class IcuExpressionEditorComponent implements OnInit {
 
   @Input() case: any;
+  @Input() caseSave$: Observable<void>;
   @Output() icuExpressionEditComplete: EventEmitter<{ key: string, target: TaalPart[] }> = new EventEmitter();
 
   taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }> = new Subject();
@@ -17,11 +19,21 @@ export class IcuExpressionEditorComponent implements OnInit {
 
   missingPlaceholders: any[] = [];
   
+  ngUnsubscribe = new Subject<void>();
 
   constructor() { }
 
   ngOnInit() {
-    
+    this.caseSave$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(_ => {
+        this.saveEdit();
+      })
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   startEdit(event: any): void {
@@ -63,9 +75,10 @@ export class IcuExpressionEditorComponent implements OnInit {
     this.missingPlaceholders = missingPlaceholders;
   }
 
-  saveEdit(translationId: string): void {
-    let targetParts = convertFromSlate(this.draft)
+  saveEdit(): void {
 
+    if (!this.draft) return this.icuExpressionEditComplete.emit(null);
+    let targetParts = convertFromSlate(this.draft);
     this.icuExpressionEditComplete.emit({
       key: this.case.key,
       target: targetParts.parts

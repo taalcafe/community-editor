@@ -12,10 +12,13 @@
     <div style="margin-top: 25px; border: 1px solid lightgrey; padding: 10px; border-radius: 4px;"
       nz-row *ngFor="let icuExpression of editCache.icuExpressionTree; let i = index">
       <div style="margin-top: -22px;">
-        <span class="placeholder">&lt;ICU-Message-Ref_{{ i }}/&gt;</span>
+        <span style="cursor: default" class="placeholder">&lt;ICU-Message-Ref_{{ i }}/&gt;</span>
       </div>
       <div *ngFor="let case of icuExpression.cases">
-        <app-icu-expression-editor [case]="case"></app-icu-expression-editor>
+        <app-icu-expression-editor
+          [case]="case"
+          [caseSave$]="caseSave.asObservable()"
+          (icuExpressionEditComplete)="icuExpressionEditComplete($event, i, case)"></app-icu-expression-editor>
       </div>
     </div>
   </div>

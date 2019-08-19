@@ -14,11 +14,11 @@ export class TranslationTableRowComponent implements OnInit {
   @Input() missingTranslation: boolean;
   @Input() invalidTranslation: boolean;
   @Output() startEdit: EventEmitter<string> = new EventEmitter();
-  @Output() saveEdit: EventEmitter<{ translationId: string, draft: any }> = new EventEmitter();
+  @Output() saveEdit: EventEmitter<{ translationId: string, editCache: any }> = new EventEmitter();
   @Output() undoEdit: EventEmitter<string> = new EventEmitter();
 
   taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }> = new Subject();
-
+  save: Subject<void> = new Subject();
 
   draft: any;
 
@@ -69,8 +69,14 @@ export class TranslationTableRowComponent implements OnInit {
     this.editCache.missingPlaceholders = missingPlaceholders;
   }
 
+  updateICUExpressions(event: any) {
+    this.editCache.targetIcuExpressions = event;
+  }
+
   saveEditFn() {
-    this.saveEdit.emit({ translationId: this.editCache.data.translationId, draft: this.draft })
+    let targetParts = convertFromSlate(this.draft)
+    this.editCache['targetParts'] = targetParts;
+    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache })
   }
 
   undoEditFn() {
