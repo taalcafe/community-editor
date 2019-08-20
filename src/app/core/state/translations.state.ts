@@ -16,7 +16,7 @@ export class LoadTranslations {
 
 export class UpdateTranslation {
   static readonly type = '[Translations] Update Translation';
-  constructor(public translationId: string, public target: TaalPart[], public icuExpressions: ITaalMessagePart[]) {}
+  constructor(public translationId: string, public target: TaalPart[], public icuExpressions: ITaalIcuMessage[]) {}
 }
 
 export class DownloadTranslationsFile {
@@ -99,11 +99,10 @@ export class TranslationsState {
       
       let missingTranslationsMap = getState().missingTranslationsMap
       updatedTranslation.targetParts = <ITaalMessagePart[]>action.target;
-
-      // if(action.icuExpressions) {
-
-      //   updatedTranslation.targetIcuExpressions = [{id: '0', parts: action.icuExpressions}]
-      // }
+      
+      if(updatedTranslation.targetIcuExpressions && updatedTranslation.targetIcuExpressions.length)
+        (updatedTranslation.targetIcuExpressions as any[])[0]['parts'] = action.icuExpressions;
+      
 
       delete missingTranslationsMap[updatedTranslation.translationId]
 
@@ -113,6 +112,7 @@ export class TranslationsState {
     @Action(DownloadTranslationsFile)
     downloadTranslationsFile({ getState, patchState }) {
       let translations = getState().translations;
+      
       const file = new TranslationMessagesFileFactory()
         .createFileFromUnknownFormatFileContent(getState().inputXml, 'nop', 'utf8')
         .createTranslationFileForLang('bg', 'nop', false, true);

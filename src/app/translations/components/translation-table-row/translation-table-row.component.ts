@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { convertFromSlate } from 'taal-editor';
 import { Subject } from 'rxjs';
+import { Translation } from 'src/app/upload-translation-file/models/translation';
+import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 
 @Component({
   selector: '[translationTableRow]',
@@ -10,17 +12,21 @@ import { Subject } from 'rxjs';
 export class TranslationTableRowComponent implements OnInit {
 
   @Input() data: any;
-  @Input() editCache: any;
+  @Input() editCache: LocalCache;
+
   @Input() missingTranslation: boolean;
   @Input() invalidTranslation: boolean;
+
   @Output() startEdit: EventEmitter<string> = new EventEmitter();
-  @Output() saveEdit: EventEmitter<{ translationId: string, editCache: any }> = new EventEmitter();
+  @Output() saveEdit: EventEmitter<{ translationId: string, editCache: LocalCache }> = new EventEmitter();
   @Output() undoEdit: EventEmitter<string> = new EventEmitter();
 
   taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }> = new Subject();
   save: Subject<void> = new Subject();
 
   draft: any;
+
+  localCache: any;
 
   constructor() { }
 
@@ -70,20 +76,32 @@ export class TranslationTableRowComponent implements OnInit {
   }
 
   updateICUExpressions(event: any) {
-    this.editCache.targetIcuExpressions = event;
+
+    this.editCache.data.targetIcuExpressions = event;
+
+    let targetParts = convertFromSlate(this.draft)
+    this.editCache['targetParts'] = targetParts;
+    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache });
   }
 
   saveEditFn() {
-    let targetParts = convertFromSlate(this.draft)
-    this.editCache['targetParts'] = targetParts;
-    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache })
+    this.save.next();
   }
 
   undoEditFn() {
-    this.saveEdit.emit(this.editCache.data.translationId);
+    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache });
   }
 
   startEditFn() {
     this.startEdit.emit(this.data.translationId);
   }
+}
+
+
+export interface LocalCache {
+  data: Translation;
+  edit: boolean;
+  icuExpressionTree: { cases: any[] }[];
+  missingICUExpressions: ITaalIcuMessage[];
+  missingPlaceholders: any[];
 }

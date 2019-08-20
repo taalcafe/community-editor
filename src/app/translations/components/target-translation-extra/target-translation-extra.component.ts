@@ -67,10 +67,10 @@ export class TargetTranslationExtra implements OnInit, OnDestroy {
     if (payload) {
       const matchingIcuCase = this.editCache.icuExpressionTree[icuExpressionIndex].cases.find(_ => _.key === icuCase.key);
       if (matchingIcuCase) {
-        matchingIcuCase.parts = payload.parts;
+        matchingIcuCase.parts = payload.target;
       }
     }
-
+    
     if (this.caseCount === this.caseUpdatedCount)
       this.updateICUExpressions.emit(this.editCache.icuExpressionTree);
 

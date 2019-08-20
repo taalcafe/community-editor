@@ -25,64 +25,6 @@ export class TranslationsTableComponent implements OnInit {
   mapOfExpandData: { [key: string]: boolean } = {};
 
   startEdit(translationId: string): void {
-    const translation = this.translations.find(_ => _.translationId === translationId);
-
-    if (translation.icuExpressions && translation.icuExpressions.length) {
-      let icuExpressionParts = translation.icuExpressions[0].parts.map(_ => {
-        return _.type === 'PLACEHOLDER' ?  `__taal__${this.stripCurlyBraces(_.value)}__taal__` : _.value
-      });
-
-      let result = messageformat.parse(icuExpressionParts.join(''));
-      
-      this.editCache[translationId].icuExpressionTree = result;
-      this.editCache[translationId].icuExpressionTree
-        .forEach(treeNode => treeNode.cases.forEach(_ => {
-          const parts = []
-          
-          _.tokens.forEach(token => {
-            let placeholderRegex = /__taal__(\w+)__taal__/;
-            let remainingToken = token;
-            while(placeholderRegex.test(remainingToken)) {
-              const match = placeholderRegex.exec(token);
-              const placeholder = match[0];
-              const placeholderValue = match[1];
-              if(match.index !== 0) {
-                const beginning = token.substr(0, match.index)
-                parts.push({
-                  type: ParsedMessagePartType.TEXT,
-                  meta: beginning,
-                  value: beginning,
-                  key: beginning
-                })
-              }
-
-              parts.push({
-                type: ParsedMessagePartType.PLACEHOLDER,
-                meta: `{{${placeholderValue}}}`,
-                value: `{{${placeholderValue}}}`,
-                key: `{{${placeholderValue}}}`
-              })
-
-              remainingToken = remainingToken.substring(match.index + placeholder.length, remainingToken.length)
-            }
-
-            if(remainingToken.length) {
-              parts.push({
-                type: ParsedMessagePartType.TEXT,
-                meta: remainingToken,
-                value: remainingToken,
-                key: remainingToken
-              })
-            }
-            
-            return parts
-          })
-
-          _.validationParts = parts;
-          _.parts = parts;
-        }))
-    }
-    
     this.editCache[translationId].edit = true;
     this.mapOfExpandData[translationId] = true;
   }
@@ -107,10 +49,10 @@ export class TranslationsTableComponent implements OnInit {
     this.editCache[payload.translationId].edit = false;
 
     let icuExpression;
-    if (this.editCache[payload.translationId].icuExpressionTree) {
-      icuExpression = this.unparseICU(this.editCache[payload.translationId].icuExpressionTree);
+    if (payload.editCache.icuExpressionTree) {
+      icuExpression = this.unparseICU(payload.editCache.icuExpressionTree);
     } 
-
+    
     this.saveTranslation.emit({
       translationId: payload.translationId,
       target: payload.editCache['targetParts'].parts,
@@ -122,8 +64,8 @@ export class TranslationsTableComponent implements OnInit {
   unparseICU(expressionTree: any): ITaalMessagePart {
     let expressionTreeRootNode = expressionTree[0];
     let reducedTokens = expressionTreeRootNode.cases.reduce((prev, curr, i) => {
-      let prevValue = i > 1 ? prev : `${prev.key} {${prev.tokens}}`;
-      return prevValue += ` ${curr.key} {${curr.tokens}}`;
+      let prevValue = i > 1 ? prev : `${prev.key} {${prev.parts.map(_ => _.value)}}`;
+      return prevValue += ` ${curr.key} {${curr.parts.map(_ => _.value)}}`;
     })
     let result = `{${expressionTreeRootNode.arg}, ${expressionTreeRootNode.type}, ${reducedTokens} }`;
 
@@ -144,6 +86,63 @@ export class TranslationsTableComponent implements OnInit {
         missingPlaceholders: [],
         missingICUExpressions: []
       };
+
+      const translation = this.translations.find(_ => _.translationId === item.translationId);
+
+      if (translation.icuExpressions && translation.icuExpressions.length) {
+        let icuExpressionParts = translation.icuExpressions[0].parts.map(_ => {
+          return _.type === 'PLACEHOLDER' ?  `__taal__${this.stripCurlyBraces(_.value)}__taal__` : _.value
+        });
+
+        let result = messageformat.parse(icuExpressionParts.join(''));
+        this.editCache[item.translationId].icuExpressionTree = result;
+        this.editCache[item.translationId].icuExpressionTree
+          .forEach(treeNode => treeNode.cases.forEach(_ => {
+            const parts = []
+            
+            _.tokens.forEach(token => {
+              let placeholderRegex = /__taal__(\w+)__taal__/;
+              let remainingToken = token;
+              while(placeholderRegex.test(remainingToken)) {
+                const match = placeholderRegex.exec(token);
+                const placeholder = match[0];
+                const placeholderValue = match[1];
+                if(match.index !== 0) {
+                  const beginning = token.substr(0, match.index)
+                  parts.push({
+                    type: ParsedMessagePartType.TEXT,
+                    meta: beginning,
+                    value: beginning,
+                    key: beginning
+                  })
+                }
+
+                parts.push({
+                  type: ParsedMessagePartType.PLACEHOLDER,
+                  meta: `{{${placeholderValue}}}`,
+                  value: `{{${placeholderValue}}}`,
+                  key: `{{${placeholderValue}}}`
+                })
+
+                remainingToken = remainingToken.substring(match.index + placeholder.length, remainingToken.length)
+              }
+
+              if(remainingToken.length) {
+                parts.push({
+                  type: ParsedMessagePartType.TEXT,
+                  meta: remainingToken,
+                  value: remainingToken,
+                  key: remainingToken
+                })
+              }
+              
+              return parts
+            })
+
+            _.validationParts = parts;
+            _.parts = parts;
+          }))
+      }
     });
   }
 
