@@ -65,9 +65,13 @@ export class TranslationsTableComponent implements OnInit {
     if (payload.editCache.icuExpressionTree) {
       icuExpression = this.unparseICU(payload.editCache.icuExpressionTree);
     } 
-
+    
     this.store.dispatch(
-      new UpdateTranslation(payload.translationId, payload.editCache['targetParts'].parts, [icuExpression]));
+      new UpdateTranslation(
+        payload.translationId,
+        payload.editCache.data['targetParts'].parts || [],
+        icuExpression ? [icuExpression] : []
+      ));
   }
 
   unparseICU(expressionTree: any): ITaalMessagePart {

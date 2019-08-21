@@ -67,9 +67,6 @@ export class TranslationTableRowComponent implements OnInit {
 
   updateICUExpressions(event: any) {
     this.editCache.data.targetIcuExpressions = event;
-
-    let targetParts = convertFromSlate(this.draft)
-    this.editCache['targetParts'] = targetParts;
     this.saveEditEmit();
   }
 
@@ -82,6 +79,8 @@ export class TranslationTableRowComponent implements OnInit {
   }
 
   saveEditEmit() {
+    let targetParts = convertFromSlate(this.draft)
+    this.editCache.data.targetParts = <any>targetParts;
     this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache });
   }
 

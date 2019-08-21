@@ -81,7 +81,7 @@ export class IcuExpressionEditorComponent implements OnInit {
     let targetParts = convertFromSlate(this.draft);
     this.icuExpressionEditComplete.emit({
       key: this.case.key,
-      target: targetParts.parts
+      target: targetParts.parts || []
     })
   }
 
