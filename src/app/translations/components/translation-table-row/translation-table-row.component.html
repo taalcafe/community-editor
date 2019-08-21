@@ -4,34 +4,37 @@
     <i *ngIf="invalidTranslation" style="color: red" nz-icon nzType="exclamation-circle" nzTheme="outline"></i>
   </td>
   <td style="vertical-align: top;">
-    <span style="max-width: 100px">{{ data.translationId.length > 28 ? (data.translationId | slice:0:28) + '...' : data.translationId }}</span>
+    <span style="max-width: 100px">{{ translationId.length > 28 ? (translationId | slice:0:28) + '...' : translationId }}</span>
   </td>
   <td style="vertical-align: top;">
     <ng-container>
       <app-taal-editor
         [readonly]="true"
-        (taalEditorChange)="taalEditorChange($event)"
-        [id]="data.translationId"
-        [parts]="data.parts"
-        [icuExpressions]="data.icuExpressions"></app-taal-editor>
+        [id]="translationId"
+        [parts]="parts"
+        [icuExpressions]="icuExpressions"></app-taal-editor>
     </ng-container>
   </td>
   <td style="vertical-align: top;">
     <app-taal-editor
       (click)="startEditFn()"
       (taalEditorChange)="taalEditorChange($event)"              
-      [id]="data.translationId"
-      [parts]="data.targetParts"
+      [id]="translationId"
+      [parts]="targetParts"
       [action$]="taalEditorActionDispatcher.asObservable()"
-      [icuExpressions]="data.icuExpressions"></app-taal-editor>
+      [icuExpressions]="icuExpressions"></app-taal-editor>
 
-      <div style="margin-top: 10px;" *ngIf="editCache?.missingPlaceholders?.length || editCache?.missingICUExpressions?.length || editCache?.icuExpressionTree">
+      <div style="margin-top: 10px;" *ngIf="missingPlaceholders?.length || missingICUExpressions?.length || editCache?.icuExpressionTree">
         <app-target-translation-extra
           [editCache]="editCache"
           [taalEditorActionDispatcher]="taalEditorActionDispatcher"
           [save$]="save.asObservable()"
-          (updateMissingPlaceholders)="updateMissingPlaceholders()"
-          (updateMissingICUExpressions)="updateMissingICUExpressions()"
+
+          [missingPlaceholders]="missingPlaceholders"
+          [missingICUExpressions]="missingICUExpressions"
+          
+          (updateMissingPlaceholders)="updateMissingPlaceholdersFn()"
+          (updateMissingICUExpressions)="updateMissingICUExpressionsFn()"
           (updateICUExpressions)="updateICUExpressions($event)"></app-target-translation-extra>
       </div>
   </td>
@@ -42,7 +45,7 @@
       nz-button
       nzType="primary"
       nzGhost
-      [disabled]="!editCache.edit"
+      [disabled]="!edit"
       (click)="saveEditFn()"><i nz-icon type="check"></i></button>
       <button
       style="display: inline-block; margin-left: 8px;"
@@ -50,6 +53,6 @@
       nz-button
       nzType="danger"
       nzGhost
-      [disabled]="!editCache.edit"
+      [disabled]="!edit"
       (click)="undoEditFn()"><i nz-icon type="undo"></i></button>
   </td>

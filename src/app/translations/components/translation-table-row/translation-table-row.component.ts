@@ -3,6 +3,7 @@ import { convertFromSlate } from 'taal-editor';
 import { Subject } from 'rxjs';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
+import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
 
 @Component({
   selector: '[translationTableRow]',
@@ -11,11 +12,25 @@ import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu
 })
 export class TranslationTableRowComponent implements OnInit {
 
-  @Input() data: any;
+  @Input() edit: boolean;
+
+  @Input() translationId: string;
+  @Input() parts: ITaalMessagePart[];
+  @Input() targetParts: ITaalMessagePart[];
+  @Input() icuExpressions: ITaalIcuMessage[];
+
+
   @Input() editCache: LocalCache;
 
   @Input() missingTranslation: boolean;
   @Input() invalidTranslation: boolean;
+
+  @Input() missingPlaceholders: any[];
+  @Input() missingICUExpressions: ITaalIcuMessage[];
+
+
+  @Output() updateMissingPlaceholders: EventEmitter<ITaalMessagePart[]> = new EventEmitter();
+  @Output() updateMissingICUExpressions: EventEmitter<ITaalMessagePart[]> = new EventEmitter();
 
   @Output() startEdit: EventEmitter<string> = new EventEmitter();
   @Output() saveEdit: EventEmitter<{ translationId: string, editCache: LocalCache }> = new EventEmitter();
@@ -36,56 +51,38 @@ export class TranslationTableRowComponent implements OnInit {
   taalEditorChange(event: any) {
     this.draft = event.value;
 
-    this.updateMissingPlaceholders();
-    this.updateMissingICUExpressions();
+    this.updateMissingPlaceholdersFn();
+    this.updateMissingICUExpressionsFn();
   }
 
-  updateMissingICUExpressions() {
-    let data = this.editCache.data;
-    let targetParts = convertFromSlate(this.draft);
-    let targetICUExpressions = targetParts.parts.filter(_ => _.type === 'ICU_MESSAGE_REF');
-
-    let missingICUExpressions = data.targetIcuExpressions.filter(src => {
-      return !targetICUExpressions.find(trg => {
-        return trg.value === `<ICU-Message-Ref_${src.key}/>`
-      })
-    })
-
-    this.editCache.missingICUExpressions = missingICUExpressions;
+  updateMissingICUExpressionsFn() {
+    let translation = convertFromSlate(this.draft);
+    this.updateMissingICUExpressions.emit(<ITaalMessagePart[]>translation.parts)
   }
 
-  updateMissingPlaceholders() {
-    let targetParts = convertFromSlate(this.draft);
-    let sourcePlaceholders = this.editCache.data.parts.filter(_ => _.type === 'PLACEHOLDER');
-    let targetPlaceholders = targetParts.parts.filter(_ => _.type === 'PLACEHOLDER');
-    let index = 0;
-
-    const missingPlaceholders = [];
-    while (index < sourcePlaceholders.length) {
-      const currentValue = sourcePlaceholders[index].value;
-      const sourcePlaceholdersCount = sourcePlaceholders.filter(_ => _.value === currentValue).length;
-      const targetPlaceholdersCount = targetPlaceholders.filter(_ => _.value === currentValue).length;
-      const missingPlaceholdersCount = missingPlaceholders.filter(_ => _.value === currentValue).length
-      const countDiff = sourcePlaceholdersCount - targetPlaceholdersCount;
-
-      if (countDiff > missingPlaceholdersCount) missingPlaceholders.push(sourcePlaceholders[index]);
-      index++;
-    }
-
-    this.editCache.missingPlaceholders = missingPlaceholders;
+  updateMissingPlaceholdersFn() {
+    let translation = convertFromSlate(this.draft);
+    this.updateMissingPlaceholders.emit(<ITaalMessagePart[]>translation.parts)
   }
 
   updateICUExpressions(event: any) {
-
     this.editCache.data.targetIcuExpressions = event;
 
     let targetParts = convertFromSlate(this.draft)
     this.editCache['targetParts'] = targetParts;
-    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache });
+    this.saveEditEmit();
   }
 
   saveEditFn() {
-    this.save.next();
+    if (this.icuExpressions.length) {
+      this.save.next();
+    } else {
+      this.saveEditEmit(); 
+    }
+  }
+
+  saveEditEmit() {
+    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache });
   }
 
   undoEditFn() {
@@ -93,7 +90,7 @@ export class TranslationTableRowComponent implements OnInit {
   }
 
   startEditFn() {
-    this.startEdit.emit(this.data.translationId);
+    this.startEdit.emit(this.translationId);
   }
 }
 

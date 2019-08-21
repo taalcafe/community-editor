@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 
 @Component({
   selector: 'app-target-translation-extra',
@@ -12,6 +13,9 @@ export class TargetTranslationExtra implements OnInit, OnDestroy {
   @Input() editCache: any;
   @Input() taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }>;
   @Input() save$: Observable<void>;
+
+  @Input() missingPlaceholders: any[];
+  @Input() missingICUExpressions: ITaalIcuMessage[];
 
   @Output() updateMissingPlaceholders: EventEmitter<void> = new EventEmitter();
   @Output() updateMissingICUExpressions: EventEmitter<void> = new EventEmitter();

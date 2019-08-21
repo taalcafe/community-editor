@@ -4,6 +4,7 @@ import { Translation } from 'src/app/upload-translation-file/models/translation'
 import { Observable } from 'apollo-link';
 import { Select, Store } from '@ngxs/store';
 import { UpdateTranslation, DownloadTranslationsFile } from 'src/app/core/state/translations.state';
+import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 
 @Component({
   selector: 'app-translations',
@@ -28,17 +29,17 @@ export class TranslationsComponent implements OnInit {
   @Select(state => state.translations.invalidTranslationsMap)
   invalidTranslationsMap$: Observable<{[id: string]: string;}>;
 
+  @Select(state => state.translations.missingPlaceholdersMap)
+  missingPlaceholdersMap$: Observable<Map<string, any[]>>;
+  @Select(state => state.translations.missingICUExpressionsMap)
+  missingICUExpressionsMap$: Observable<Map<string, ITaalIcuMessage[]>>;
+
   constructor(private store: Store, private router: Router) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   onBack() {
     this.router.navigate(['']);
-  }
-
-  saveTranslation(event: any) {
-    this.store.dispatch(new UpdateTranslation(event.translationId, event.target, event.icuExpressions));
   }
 
   download() {

@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
-import { convertFromSlate, TaalPart } from 'taal-editor';
 import * as messageformat from 'messageformat-parser';
-import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
 import { ParsedMessagePartType } from 'src/app/ngx-lib/impl/parsed-message-part';
+import { UpdateTranslation, UpdateEditMap, UpdateMissingICUExpressionsMap, UpdateMissingPlaceholdersMap } from 'src/app/core/state/translations.state';
+import { Store, Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 
 @Component({
   selector: 'app-translations-table',
@@ -14,19 +16,31 @@ import { ParsedMessagePartType } from 'src/app/ngx-lib/impl/parsed-message-part'
 export class TranslationsTableComponent implements OnInit {
 
   @Input() translations: Translation[];
+
   @Input() sourceLanguage: string;
   @Input() targetLanguage: string;
+
   @Input() missingTranslationsMap: { [key: string]: boolean };
   @Input() invalidTranslationsMap: { [key: string]: any };
+  
+  @Input() missingPlaceholdersMap: Map<string, any[]>;
+  @Input() missingICUExpressionsMap: Map<string, ITaalIcuMessage[]>;
 
-  @Output() saveTranslation: EventEmitter<{ translationId: string, target: TaalPart[], icuExpressions: ITaalIcuMessage[] }> = new EventEmitter();
+  @Select(state => state.translations.editMap)
+  editMap$: Observable<Map<string, boolean>>;
 
   editCache: { [key: string]: any } = {};
-  mapOfExpandData: { [key: string]: boolean } = {};
+
+  constructor(private store: Store) {
+
+  }
+
+  ngOnInit(): void {
+    this.updateEditCache();
+  }
 
   startEdit(translationId: string): void {
-    this.editCache[translationId].edit = true;
-    this.mapOfExpandData[translationId] = true;
+    this.store.dispatch(new UpdateEditMap(translationId, true));
   }
 
   stripCurlyBraces(str: string) {
@@ -42,23 +56,18 @@ export class TranslationsTableComponent implements OnInit {
       missingTranslations: [],
       missingICUExpressions: []
     };
-    this.mapOfExpandData[translationId] = false;
   }
 
   saveEdit(payload: { translationId: string, editCache: any }): void {
-    this.editCache[payload.translationId].edit = false;
+    this.store.dispatch(new UpdateEditMap(payload.translationId, false));
 
     let icuExpression;
     if (payload.editCache.icuExpressionTree) {
       icuExpression = this.unparseICU(payload.editCache.icuExpressionTree);
     } 
-    
-    this.saveTranslation.emit({
-      translationId: payload.translationId,
-      target: payload.editCache['targetParts'].parts,
-      icuExpressions: [icuExpression]
-    })
-    this.mapOfExpandData[payload.translationId] = false;
+
+    this.store.dispatch(
+      new UpdateTranslation(payload.translationId, payload.editCache['targetParts'].parts, [icuExpression]));
   }
 
   unparseICU(expressionTree: any): ITaalMessagePart {
@@ -70,11 +79,6 @@ export class TranslationsTableComponent implements OnInit {
     let result = `{${expressionTreeRootNode.arg}, ${expressionTreeRootNode.type}, ${reducedTokens} }`;
 
     return { type: ParsedMessagePartType.TEXT, key: '1', value: result };
-    // return {
-    //   key: '',
-    //   type: ParsedMessagePartType.TEXT,
-    //   value: [result]
-    // };
   }
 
   updateEditCache(): void {
@@ -146,7 +150,11 @@ export class TranslationsTableComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.updateEditCache();
+  updateMissingPlaceholders(targetParts: ITaalMessagePart[], translationId: string) {
+    this.store.dispatch(new UpdateMissingPlaceholdersMap(translationId, targetParts));
+  }
+
+  updateMissingICUExpressions(targetParts: ITaalMessagePart[], translationId: string) {
+    this.store.dispatch(new UpdateMissingICUExpressionsMap(translationId, targetParts));
   }
 }

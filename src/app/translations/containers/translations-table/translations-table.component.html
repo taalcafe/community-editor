@@ -12,10 +12,23 @@
   <tbody>
     <ng-container *ngFor="let data of translationsTable.data; let index = i">
       <tr translationTableRow
-        [data]="data"
+        [edit]="(editMap$ | async)?.get(data.translationId)"
+
+        [translationId]="data.translationId"
+        [parts]="data.parts"
+        [targetParts]="data.targetParts"
+        [icuExpressions]="data.icuExpressions"
+
         [editCache]="editCache[data.translationId]"
+
         [missingTranslation]="missingTranslationsMap[data.translationId]"
         [invalidTranslation]="invalidTranslationsMap[data.translationId]"
+
+        [missingPlaceholders]="missingPlaceholdersMap?.get(data.translationId)"
+        [missingICUExpressions]="missingICUExpressionsMap?.get(data.translationId)"
+
+        (updateMissingPlaceholders)="updateMissingPlaceholders($event, data.translationId)"
+        (updateMissingICUExpressions)="updateMissingICUExpressions($event, data.translationId)"
         (startEdit)="startEdit($event)"
         (saveEdit)="saveEdit($event)"
         (undoEdit)="undoEdit($event)"></tr>

@@ -1,8 +1,8 @@
-<div *ngIf="editCache.missingPlaceholders?.length">
-  Missing Placeholders: <span class="placeholder" (click)="addPlaceholder(item)" *ngFor="let item of editCache?.missingPlaceholders">{{ item.meta }}</span>
+<div *ngIf="missingPlaceholders?.length">
+  Missing Placeholders: <span class="placeholder" (click)="addPlaceholder(item)" *ngFor="let item of missingPlaceholders">{{ item.meta }}</span>
 </div>
-<div *ngIf="editCache.missingICUExpressions?.length">
-  Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item)" *ngFor="let item of editCache?.missingICUExpressions">&lt;ICU-Message-Ref_{{ item.key }}/&gt;</span>
+<div *ngIf="missingICUExpressions?.length">
+  Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item)" *ngFor="let item of missingICUExpressions">&lt;ICU-Message-Ref_{{ item.key }}/&gt;</span>
 </div>
 <ng-container *ngIf="editCache.icuExpressionTree">
   <div style="background-color: #e8e8e8; margin-top: 15px; margin-bottom: 10px; padding: 10px;">
