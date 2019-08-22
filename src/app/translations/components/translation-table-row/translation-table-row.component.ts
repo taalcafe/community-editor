@@ -19,6 +19,7 @@ export class TranslationTableRowComponent implements OnInit {
   @Input() targetParts: ITaalMessagePart[];
   @Input() icuExpressions: ITaalIcuMessage[];
 
+  @Input() icuExpressionTree: any;
 
   @Input() editCache: LocalCache;
 
@@ -81,11 +82,11 @@ export class TranslationTableRowComponent implements OnInit {
   saveEditEmit() {
     let targetParts = convertFromSlate(this.draft)
     this.editCache.data.targetParts = <any>targetParts;
-    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache });
+    this.saveEdit.emit({ translationId: this.translationId, editCache: this.editCache });
   }
 
   undoEditFn() {
-    this.saveEdit.emit({ translationId: this.editCache.data.translationId, editCache: this.editCache });
+    this.saveEdit.emit({ translationId: this.translationId, editCache: this.editCache });
   }
 
   startEditFn() {

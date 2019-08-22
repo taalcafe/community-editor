@@ -4,13 +4,13 @@
 <div *ngIf="missingICUExpressions?.length">
   Missing ICU Expressions: <span class="placeholder" (click)="addICUExpression(item)" *ngFor="let item of missingICUExpressions">&lt;ICU-Message-Ref_{{ item.key }}/&gt;</span>
 </div>
-<ng-container *ngIf="editCache.icuExpressionTree">
+<ng-container *ngIf="icuExpressionTree">
   <div style="background-color: #e8e8e8; margin-top: 15px; margin-bottom: 10px; padding: 10px;">
     <h3 style="margin-bottom: 0; color: dimgrey;">ICU Expressions</h3>
   </div>
   <div style="font-size: 12px;">
     <div style="margin-top: 25px; border: 1px solid lightgrey; padding: 10px; border-radius: 4px;"
-      nz-row *ngFor="let icuExpression of editCache.icuExpressionTree; let i = index">
+      nz-row *ngFor="let icuExpression of icuExpressionTree; let i = index">
       <div style="margin-top: -22px;">
         <span style="cursor: default" class="placeholder">&lt;ICU-Message-Ref_{{ i }}/&gt;</span>
       </div>

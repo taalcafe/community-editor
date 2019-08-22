@@ -24,9 +24,10 @@
       [action$]="taalEditorActionDispatcher.asObservable()"
       [icuExpressions]="icuExpressions"></app-taal-editor>
 
-      <div style="margin-top: 10px;" *ngIf="missingPlaceholders?.length || missingICUExpressions?.length || editCache?.icuExpressionTree">
+      <div style="margin-top: 10px;" *ngIf="missingPlaceholders?.length || missingICUExpressions?.length || icuExpressionTree">
         <app-target-translation-extra
-          [editCache]="editCache"
+          [translationId]="translationId"
+          [icuExpressionTree]="icuExpressionTree"
           [taalEditorActionDispatcher]="taalEditorActionDispatcher"
           [save$]="save.asObservable()"
 

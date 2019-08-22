@@ -10,7 +10,8 @@ import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu
 })
 export class TargetTranslationExtra implements OnInit, OnDestroy {
 
-  @Input() editCache: any;
+  @Input() translationId: string;
+  @Input() icuExpressionTree: any;
   @Input() taalEditorActionDispatcher: Subject<{ id: string, action: string, data: any }>;
   @Input() save$: Observable<void>;
 
@@ -36,8 +37,8 @@ export class TargetTranslationExtra implements OnInit, OnDestroy {
       .subscribe(_ => {
 
         let caseCount = 0
-        if (this.editCache.icuExpressionTree) 
-          this.editCache.icuExpressionTree.forEach(_ => caseCount += _.cases.length);
+        if (this.icuExpressionTree) 
+          this.icuExpressionTree.forEach(_ => caseCount += _.cases.length);
         
         this.caseCount = caseCount;
         this.caseUpdatedCount = 0;
@@ -50,7 +51,7 @@ export class TargetTranslationExtra implements OnInit, OnDestroy {
 
   addICUExpression(icuExpression: any) {
     this.taalEditorActionDispatcher.next({
-      id: this.editCache.data.translationId,
+      id: this.translationId,
       action: 'ADD_ICU_MESSAGE_REF',
       data: { key: icuExpression.id, value: `<ICU-Message-Ref_${icuExpression.key}/>` }
     });
@@ -59,7 +60,7 @@ export class TargetTranslationExtra implements OnInit, OnDestroy {
 
   addPlaceholder(placeholder: any) {
     this.taalEditorActionDispatcher.next({
-      id: this.editCache.data.translationId,
+      id: this.translationId,
       action: 'ADD_PLACEHOLDER',
       data: { key: placeholder.key, value: placeholder.value }
     });
@@ -69,14 +70,14 @@ export class TargetTranslationExtra implements OnInit, OnDestroy {
   icuExpressionEditComplete(payload: any, icuExpressionIndex: number, icuCase: any) {
     this.caseUpdatedCount++;
     if (payload) {
-      const matchingIcuCase = this.editCache.icuExpressionTree[icuExpressionIndex].cases.find(_ => _.key === icuCase.key);
+      const matchingIcuCase = this.icuExpressionTree[icuExpressionIndex].cases.find(_ => _.key === icuCase.key);
       if (matchingIcuCase) {
         matchingIcuCase.parts = payload.target;
       }
     }
     
     if (this.caseCount === this.caseUpdatedCount)
-      this.updateICUExpressions.emit(this.editCache.icuExpressionTree);
+      this.updateICUExpressions.emit(this.icuExpressionTree);
 
   }
 
