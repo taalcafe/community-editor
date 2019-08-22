@@ -18,6 +18,7 @@ export class TranslationTableRowComponent implements OnInit {
   @Input() parts: ITaalMessagePart[];
   @Input() targetParts: ITaalMessagePart[];
   @Input() icuExpressions: ITaalIcuMessage[];
+  @Input() targetIcuExpressions: ITaalIcuMessage[];
 
   @Input() icuExpressionTree: any;
 
@@ -67,7 +68,7 @@ export class TranslationTableRowComponent implements OnInit {
   }
 
   updateICUExpressions(event: any) {
-    this.editCache.data.targetIcuExpressions = event;
+    this.targetIcuExpressions = event;
     this.saveEditEmit();
   }
 
