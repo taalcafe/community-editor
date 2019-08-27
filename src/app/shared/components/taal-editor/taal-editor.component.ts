@@ -16,6 +16,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class TaalEditorComponent implements OnInit {
 
     @Input() action$: Observable<{ id: string, action: string, data: any }>;
+
     @Input() readonly: boolean;
     @Input() id: string;
 
@@ -81,6 +82,8 @@ export class TaalEditorComponent implements OnInit {
                             this.taalEditorInstance.addIcuExpression(_.data.key, _.data.value);
                             break;
                         }
+
+                        
                     }
                 })
         }

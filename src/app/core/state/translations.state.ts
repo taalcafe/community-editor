@@ -1,6 +1,5 @@
-import { State, Action, StateContext } from '@ngxs/store';
+import { State, Action, StateContext, Selector, Store, createSelector } from '@ngxs/store';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
-import { TaalPart } from 'taal-editor';
 import { TranslationMessagesFileFactory } from 'src/app/ngx-lib/api';
 import { saveAs } from 'file-saver/src/FileSaver';
 import { denormalizeInto } from 'src/app/upload-translation-file/handler/denormalizer';
@@ -8,6 +7,7 @@ import ISO6391 from 'iso-639-1';
 import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 import produce from 'immer';
+
 // Actions
 export class LoadTranslations {
     static readonly type = '[Translations] Load Translations';
@@ -27,7 +27,7 @@ export class UpdateMissingICUExpressionsMap {
 }
 export class UpdateTranslation {
   static readonly type = '[Translations] Update Translation';
-  constructor(public translationId: string, public target: TaalPart[], public icuExpressions: ITaalIcuMessage[]) {}
+  constructor(public translationId: string, public targetParts: ITaalMessagePart[], public icuExpressions: ITaalIcuMessage[]) {}
 }
 
 export class DownloadTranslationsFile {
@@ -71,6 +71,16 @@ export interface TranslationsStateModel {
   }
 })
 export class TranslationsState {
+
+    constructor(public store: Store) {
+    }
+
+    static translationById(translationId: string)   {
+      return createSelector([TranslationsState], (state: TranslationsStateModel) => {
+        return state.translations.find((_: Translation) => _.translationId === translationId);
+      });
+    }
+
     @Action(LoadTranslations)
     loadTranslations({ patchState, dispatch }, action: LoadTranslations) {
       let sourceLanguage = action.sourceLanguage ? (<any>ISO6391).getName(action.sourceLanguage) : undefined;
@@ -103,20 +113,20 @@ export class TranslationsState {
       let invalidTranslationsMap = getState().invalidTranslationsMap
 
       let sourceICUExpressionsCount = updatedTranslation.parts.filter(_ => _.type === 'ICU_MESSAGE_REF').length;
-      let targetICUExpressionsCount = action.target.filter(_ => _.type === 'ICU_MESSAGE_REF').length;
+      let targetICUExpressionsCount = action.targetParts.filter(_ => _.type === 'ICU_MESSAGE_REF').length;
       let sourcePlaceholdersCount = updatedTranslation.parts.filter(_ => _.type === 'PLACEHOLDER').length;
-      let targetPlaceholdersCount = action.target.filter(_ => _.type === 'PLACEHOLDER').length;
+      let targetPlaceholdersCount = action.targetParts.filter(_ => _.type === 'PLACEHOLDER').length;
       let icuExpressionsCountMatch = sourceICUExpressionsCount === targetICUExpressionsCount;
       let placeholdersCountMatch = sourcePlaceholdersCount === targetPlaceholdersCount;
 
-      if(!action.target || !icuExpressionsCountMatch || !placeholdersCountMatch) {
+      if(!action.targetParts || !icuExpressionsCountMatch || !placeholdersCountMatch) {
           invalidTranslationsMap[updatedTranslation.translationId] = 'Missing translation parts';
       } else {
           delete invalidTranslationsMap[updatedTranslation.translationId]
       }
-      
+
       let missingTranslationsMap = getState().missingTranslationsMap
-      updatedTranslation.targetParts = <ITaalMessagePart[]>action.target;
+      updatedTranslation.targetParts = action.targetParts;
       
       if(updatedTranslation.targetIcuExpressions && updatedTranslation.targetIcuExpressions.length)
         (updatedTranslation.targetIcuExpressions as any[])[0]['parts'] = action.icuExpressions;
@@ -205,4 +215,6 @@ export class TranslationsState {
        
        saveAs(blob, getState().fileName);
     }
+
+
 }

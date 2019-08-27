@@ -14,14 +14,7 @@
       <tr translationTableRow
         [edit]="(editMap$ | async)?.get(data.translationId)"
 
-        [translationId]="data.translationId"
-        [parts]="data.parts"
-        [targetParts]="data.targetParts"
-        [icuExpressions]="data.icuExpressions"
-        [targetIcuExpressions]="data.targetIcuExpressions"
-        [icuExpressionTree]="editCache[data.translationId]?.icuExpressionTree"
-
-        [editCache]="editCache[data.translationId]"
+        [translation$]="getTranslationObservableByTranslationId(data.translationId)"
 
         [missingTranslation]="missingTranslationsMap[data.translationId]"
         [invalidTranslation]="invalidTranslationsMap[data.translationId]"
