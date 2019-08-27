@@ -1,0 +1,35 @@
+<form nz-form [nzLayout]="'inline'">
+  <div nz-row [nzGutter]="12">
+    <div nz-col nzSpan="12">
+      <nz-form-item style="width: 100%;">
+        <nz-form-label>Source Language</nz-form-label>
+        <nz-form-control style="width: 100%;">
+          <nz-select
+            style="width: 100%;"
+            nzShowSearch
+            [(ngModel)]="sourceLanguage"
+            [ngModelOptions]="{standalone: true}">
+            <nz-option *ngFor="let language of languages" [nzLabel]="getLanguageLabel(language)" [nzValue]="language"> </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="12">
+      <nz-form-item style="width: 100%;">
+        <nz-form-label>Target Language</nz-form-label>
+        <nz-form-control style="width: 100%;">
+          <nz-select
+            style="width: 100%;"
+            nzShowSearch
+            [(ngModel)]="targetLanguage"
+            [ngModelOptions]="{standalone: true}">
+            <nz-option *ngFor="let language of languages" [nzLabel]="getLanguageLabel(language)" [nzValue]="language"> </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row style="text-align: right; margin-top: 15px;">
+    <button nz-button [disabled]="!sourceLanguage || !targetLanguage" nzType="primary" (click)="onSave()">Continue</button>
+  </div>
+</form>

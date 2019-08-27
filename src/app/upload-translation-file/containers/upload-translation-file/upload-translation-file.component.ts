@@ -15,13 +15,20 @@ import { Router } from '@angular/router';
 export class UploadTranslationFileComponent implements OnInit {
 
   uploading = false;
+  showModal = false;
+
+  translations: Translation[];
+  fileName: string;
+  content: any;
+  sourceLanguage: string;
+  targetLanguage: string;
 
   constructor(private store: Store, private router: Router) { }
 
   ngOnInit() {
   }
 
-  handleChange({ file, fileList }: { [key: string]: any }): void {
+  handleChange({ file }: { [key: string]: any }): void {
     if (file.status === 'uploading')  this.uploading = true;
     else if(file.status === 'done' || file.status === 'error') this.uploading = false;
   }
@@ -45,17 +52,34 @@ export class UploadTranslationFileComponent implements OnInit {
       const transUnits: ITransUnit[] = [];
       file.forEachTransUnit(tu => transUnits.push(tu));
 
-      const translations: Translation[] = normalize(transUnits);
+      this.translations = normalize(transUnits);
+      this.fileName = item.file.name;
+      this.content = content;
+      this.sourceLanguage = file.sourceLanguage()
+      this.targetLanguage = file.targetLanguage()
+      
+      if (this.targetLanguage) return this.loadTranslations();
 
-      this.store.dispatch(new LoadTranslations(
-        translations,
-        item.file.name,
-        content,
-        file.sourceLanguage(),
-        file.targetLanguage()))
-      this.router.navigate(['translations'])
+      this.showModal = true;
     }
 
     fileReader.readAsText(<any>item.file);
   };
+
+  loadTranslations() {
+    this.store.dispatch(new LoadTranslations(
+        this.translations,
+        this.fileName,
+        this.content,
+        this.sourceLanguage,
+        this.targetLanguage
+    ))
+    this.router.navigate(['translations'])
+  }
+
+  onSaveMissingInformation(event: any) {
+    this.targetLanguage = event.targetLanguage;
+
+    this.loadTranslations();
+  }
 }

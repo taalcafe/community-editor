@@ -11,3 +11,14 @@
     Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
   </p>
 </nz-upload>
+
+<nz-modal
+  [(nzVisible)]="showModal"
+  [nzFooter]="null"
+  nzTitle="One more thing, before we start">
+  
+  <app-missing-information-form *ngIf="showModal"
+    [sourceLanguage]="sourceLanguage"
+    [targetLanguage]="targetLanguage"
+    (save)="onSaveMissingInformation($event)"></app-missing-information-form>
+</nz-modal>
