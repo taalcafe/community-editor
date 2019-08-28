@@ -23,9 +23,7 @@
         [invalidTranslationsMap]="invalidTranslationsMap$ | async"
 
         [missingPlaceholdersMap]="missingPlaceholdersMap$ | async"
-        [missingICUExpressionsMap]="missingICUExpressionsMap$ | async"
-        
-        (saveTranslation)="saveTranslation($event)"></app-translations-table>
+        [missingICUExpressionsMap]="missingICUExpressionsMap$ | async"></app-translations-table>
     </ng-container>
     <button class="download-button" nz-button nzType="primary" [nzSize]="'large'" nzShape="round" (click)="download()"><i nz-icon type="download"></i>Download as .xlf</button>
 </div>

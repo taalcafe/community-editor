@@ -1,16 +1,24 @@
-<nz-upload
-  nzType="drag"
-  [nzCustomRequest]="process"
-  [nzShowUploadList]="false"
-  (nzChange)="handleChange($event)">
-  <p class="ant-upload-drag-icon">
-    <i nz-icon type="inbox"></i>
-  </p>
-  <p class="ant-upload-text">Click or drag <b>.xliff</b> file to this area to upload</p>
-  <p class="ant-upload-hint">
-    Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
-  </p>
-</nz-upload>
+
+  <nz-upload
+    nzType="drag"
+    [nzCustomRequest]="process"
+    [nzShowUploadList]="false"
+    (nzChange)="handleChange($event)"
+    [nzBeforeUpload]="beforeUpload"
+    [nzDisabled]="pending">
+    <nz-spin [nzSpinning]="pending" [nzIndicator]="indicatorTemplate" [nzTip]="state">
+    <p class="ant-upload-drag-icon" [ngStyle]="{ 'visibility': pending ? 'hidden' : 'inherit' }">
+      <i nz-icon type="inbox"></i>
+    </p>
+    <p class="ant-upload-text" [ngStyle]="{ 'visibility': pending ? 'hidden' : 'inherit' }">Click or drag <b>.xliff</b> file to this area to upload</p>
+    <p class="ant-upload-hint" [ngStyle]="{ 'visibility': pending ? 'hidden' : 'inherit' }">
+      Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+    </p>
+  </nz-spin>
+  </nz-upload>
+
+<ng-template #indicatorTemplate><i nz-icon nzType="loading" style="font-size: 35px;"></i> </ng-template>
+
 
 <nz-modal
   [(nzVisible)]="showModal"

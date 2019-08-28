@@ -23,9 +23,16 @@ export class UploadTranslationFileComponent implements OnInit {
   sourceLanguage: string;
   targetLanguage: string;
 
+  pending: boolean;
+  state = 'Uploading';
+
   constructor(private store: Store, private router: Router) { }
 
   ngOnInit() {
+  }
+
+  beforeUpload = (event: any) => {
+    this.pending = true
   }
 
   handleChange({ file }: { [key: string]: any }): void {
@@ -37,6 +44,9 @@ export class UploadTranslationFileComponent implements OnInit {
 
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
+
+      this.state = 'Processing';
+
       console.log(fileReader.result);
 
       const factory = new TranslationMessagesFileFactory();
@@ -55,9 +65,11 @@ export class UploadTranslationFileComponent implements OnInit {
       this.translations = normalize(transUnits);
       this.fileName = item.file.name;
       this.content = content;
-      this.sourceLanguage = file.sourceLanguage()
-      this.targetLanguage = file.targetLanguage()
+      this.sourceLanguage = file.sourceLanguage();
+      this.targetLanguage = file.targetLanguage();
       
+      this.state = 'Completed';
+
       if (this.targetLanguage) return this.loadTranslations();
 
       this.showModal = true;
