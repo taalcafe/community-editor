@@ -104,6 +104,12 @@ export class TranslationTableRowComponent implements OnInit {
       targetParts: this.targetParts,
       icuExpressionTree: this.icuExpressionTree
     });
+
+    this.taalEditorActionDispatcher.next({
+      id: this.translationId,
+      action: 'UNDO',
+      data: { }
+    })
   }
 
   startEditFn() {
