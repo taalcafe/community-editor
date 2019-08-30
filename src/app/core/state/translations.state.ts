@@ -1,4 +1,4 @@
-import { State, Action, StateContext, Selector, Store, createSelector } from '@ngxs/store';
+import { State, Action, Store, createSelector } from '@ngxs/store';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { TranslationMessagesFileFactory } from 'src/app/ngx-lib/api';
 import { saveAs } from 'file-saver/src/FileSaver';
@@ -7,6 +7,7 @@ import ISO6391 from 'iso-639-1';
 import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 import produce from 'immer';
+import { Tab } from 'src/app/shared/models/tab.enum';
 
 // Actions
 export class LoadTranslations {
@@ -35,9 +36,31 @@ export class DownloadTranslationsFile {
   constructor() {}
 }
 
+export class ChangePage {
+  static readonly type = '[Translations] Change Page';
+  constructor(public pageIndex: number) {}
+}
+
+export class ChangePageSize {
+  static readonly type = '[Translations] Change Page Size';
+  constructor(public pageSize: number) {}
+}
+
+export class ChangeTab {
+  static readonly type = '[Translations] Change Tav';
+  constructor(public tabIndex: number) {}
+}
+
 // State Model
 export interface TranslationsStateModel {
+
+    pageIndex: number;
+    pageSize: number;
+    tabIndex: number;
+    totalTranslations: number;
     translations: Translation[];
+    pagedTranslations: Translation[];
+
     fileName: string;
     inputXml: string;
     sourceLanguage: string;
@@ -55,7 +78,14 @@ export interface TranslationsStateModel {
 @State<TranslationsStateModel>({
   name: 'translations',
   defaults: {
+
+    pageIndex: 1,
+    pageSize: 10,
+    tabIndex: 0,
+    totalTranslations: 0,
     translations: [],
+    pagedTranslations: [],
+
     fileName: undefined,
     inputXml: undefined,
     sourceLanguage: undefined,
@@ -77,12 +107,12 @@ export class TranslationsState {
 
     static translationById(translationId: string)   {
       return createSelector([TranslationsState], (state: TranslationsStateModel) => {
-        return state.translations.find((_: Translation) => _.translationId === translationId);
+        return state.pagedTranslations.find((_: Translation) => _.translationId === translationId);
       });
     }
 
     @Action(LoadTranslations)
-    loadTranslations({ patchState, dispatch }, action: LoadTranslations) {
+    loadTranslations({ getState, patchState, dispatch }, action: LoadTranslations) {
       let sourceLanguage = action.sourceLanguage ? (<any>ISO6391).getName(action.sourceLanguage) : undefined;
       let targetLanguage = action.targetLanguage ? (<any>ISO6391).getName(action.targetLanguage) : undefined;
 
@@ -94,7 +124,9 @@ export class TranslationsState {
         .forEach(_ => missingTranslationsMap[_] = true);
 
       patchState({
+        totalTranslations: action.translations.length,
         translations: action.translations,
+        pagedTranslations: this.paginate(action.translations, getState().pageSize, 0),
         fileName: action.fileName,
         inputXml: action.xml,
         sourceLanguage: sourceLanguage,
@@ -106,8 +138,8 @@ export class TranslationsState {
     }
 
     @Action(UpdateTranslation)
-    updateTranslation({ getState, patchState }, action: UpdateTranslation) {
-      let translations = getState().translations;
+    updateTranslation({ getState, patchState, dispatch }, action: UpdateTranslation) {
+      let translations = getState().pagedTranslations;
       let updatedTranslation: Translation = translations.find(_ => _.translationId === action.translationId);
 
       let invalidTranslationsMap = getState().invalidTranslationsMap
@@ -135,8 +167,8 @@ export class TranslationsState {
       delete missingTranslationsMap[updatedTranslation.translationId]
 
       patchState({ missingTranslationsMap, invalidTranslationsMap })
+      if (getState().tabIndex === Tab.MissingTranslations) dispatch(new ChangeTab(1));
     }
-
     @Action(UpdateEditMap)
     updateEditMap({ getState, patchState }, action: UpdateEditMap) {
 
@@ -152,7 +184,7 @@ export class TranslationsState {
       const missingPlaceholdersMap = produce(getState().missingPlaceholdersMap, (draft: Map<string, any[]>) => {
         const _ = draft.get(action.translationId);
         {
-          let translation: Translation = getState().translations.find(_ => _.translationId === action.translationId);
+          let translation: Translation = getState().pagedTranslations.find(_ => _.translationId === action.translationId);
           let sourcePlaceholders = translation.parts.filter(_ => _.type === 'PLACEHOLDER');
           let targetPlaceholders = action.targetParts.filter(_ => _.type === 'PLACEHOLDER');
           let index = 0;
@@ -182,7 +214,7 @@ export class TranslationsState {
       const missingICUExpressionsMap = produce(getState().missingICUExpressionsMap, (draft: Map<string, ITaalIcuMessage[]>) => {
         const _ = draft.get(action.translationId);
         {
-          let translation: Translation = getState().translations.find(_ => _.translationId === action.translationId);
+          let translation: Translation = getState().pagedTranslations.find(_ => _.translationId === action.translationId);
           let targetICUExpressions = action.targetParts.filter(_ => _.type === 'ICU_MESSAGE_REF');
     
           let missingICUExpressions = translation.targetIcuExpressions.filter(src => {
@@ -199,7 +231,7 @@ export class TranslationsState {
     }
 
     @Action(DownloadTranslationsFile)
-    downloadTranslationsFile({ getState, patchState }) {
+    downloadTranslationsFile({ getState }) {
       let translations = getState().translations;
       
       const file = new TranslationMessagesFileFactory()
@@ -214,6 +246,44 @@ export class TranslationsState {
        });
        
        saveAs(blob, getState().fileName);
+    }
+
+    @Action(ChangePage)
+    changePage({ getState, patchState }, action: ChangePage) {
+      const translations: Translation[] = this.getTabbedTranslations(getState);
+      patchState({
+        pageIndex: action.pageIndex,
+        pagedTranslations: this.paginate(translations, getState().pageSize, action.pageIndex),
+        totalTranslations: translations.length
+      })
+    }
+
+    @Action(ChangePageSize)
+    changePageSize({ patchState, dispatch }, action: ChangePageSize) {
+      patchState({
+        pageSize: action.pageSize
+      })
+
+      dispatch(new ChangePage(0));
+    }
+
+    @Action(ChangeTab)
+    changeTab({ patchState, dispatch }, action: ChangeTab) {
+      patchState({ tabIndex: action.tabIndex })
+
+      dispatch(new ChangePage(0));
+    }
+
+    private paginate (array: any[], pageSize: number, pageIndex: number) {
+      return array.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+    }
+
+    private getTabbedTranslations(state: any): Translation[] {
+      let translations = state().translations;
+      if (state().tabIndex === Tab.MissingTranslations) {
+        translations = state().translations.filter(_ => state().missingTranslationsMap[_.translationId]);
+      }
+      return translations;
     }
 
 

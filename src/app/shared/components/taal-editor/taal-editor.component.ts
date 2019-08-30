@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as uuid from 'uuid';
@@ -6,12 +6,13 @@ import * as invariant from 'invariant';
 import { TaalEditor, TaalEditorProps, TaalIcuExpression, TaalPart } from 'taal-editor';
 import * as Slate from 'slate';
 import { Observable, Subject } from 'rxjs';
-import { filter, takeUntil, debounce, debounceTime } from 'rxjs/operators';
+import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-taal-editor',
   templateUrl: './taal-editor.component.html',
-  styleUrls: ['./taal-editor.component.less']
+  styleUrls: ['./taal-editor.component.less'],
+
 })
 export class TaalEditorComponent implements OnInit {
 
@@ -33,32 +34,6 @@ export class TaalEditorComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
 
     subject: Subject<any> = new Subject();
-
-    protected getRootDomNode() {
-        const node = this.el.nativeElement;
-        invariant(node, `Node '${this.rootDomID} not found!`);
-        return node;
-    }
-
-    private isMounted(): boolean {
-        return !!this.rootDomID;
-    }
-
-    protected render() {
-        if (this.isMounted()) {
-            this.taalEditorInstance = ReactDOM.render(
-                React.createElement(
-                    TaalEditor,
-                    <TaalEditorProps>{
-                        readonly: this.readonly,
-                        setRef: undefined,
-                        onChange: ($event) => this.subject.next($event),
-                        initialValue: { parts: this.parts, icuExpressions: this.icuExpressions }
-                    }),
-                    this.getRootDomNode()
-                );
-        }
-    }
 
     ngOnInit() {
         this.rootDomID = uuid.v1();
@@ -103,5 +78,31 @@ export class TaalEditorComponent implements OnInit {
     ngOnDestroy(): void {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+    }
+
+    protected getRootDomNode() {
+        const node = this.el.nativeElement;
+        invariant(node, `Node '${this.rootDomID} not found!`);
+        return node;
+    }
+
+    private isMounted(): boolean {
+        return !!this.rootDomID;
+    }
+
+    protected render() {
+        if (this.isMounted()) {
+            this.taalEditorInstance = ReactDOM.render(
+                React.createElement(
+                    TaalEditor,
+                    <TaalEditorProps>{
+                        readonly: this.readonly,
+                        setRef: undefined,
+                        onChange: ($event) => this.subject.next($event),
+                        initialValue: { parts: this.parts, icuExpressions: this.icuExpressions }
+                    }),
+                    this.getRootDomNode()
+                );
+        }
     }
 }

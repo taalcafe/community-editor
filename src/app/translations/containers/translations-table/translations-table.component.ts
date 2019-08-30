@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
 import { ParsedMessagePartType } from 'src/app/ngx-lib/impl/parsed-message-part';
-import { UpdateTranslation, UpdateEditMap, UpdateMissingICUExpressionsMap, UpdateMissingPlaceholdersMap, TranslationsState } from 'src/app/core/state/translations.state';
+import { UpdateTranslation, UpdateEditMap, UpdateMissingICUExpressionsMap, UpdateMissingPlaceholdersMap, TranslationsState, ChangePage, ChangePageSize } from 'src/app/core/state/translations.state';
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
@@ -14,6 +14,7 @@ import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu
 })
 export class TranslationsTableComponent implements OnInit {
 
+  @Input() total: number;
   @Input() translations: Translation[];
 
   @Input() sourceLanguage: string;
@@ -28,20 +29,15 @@ export class TranslationsTableComponent implements OnInit {
   @Select(state => state.translations.editMap)
   editMap$: Observable<Map<string, boolean>>;
 
-  constructor(private store: Store) {
+  @Select(state => state.translations.pageIndex)
+  pageIndex$: Observable<Map<string, boolean>>;
 
-  }
+  constructor(private store: Store) { }
 
   ngOnInit(): void { }
 
   startEdit(translationId: string): void {
     this.store.dispatch(new UpdateEditMap(translationId, true));
-  }
-
-  undoEdit(translationId: string): void {
-    const translation = this.translations.find(_ => _.translationId === translationId);
-
-    debugger;
   }
 
   saveEdit(payload: { translationId: string, targetParts: ITaalMessagePart[], icuExpressionTree: any }): void {
@@ -81,5 +77,13 @@ export class TranslationsTableComponent implements OnInit {
 
   getTranslationObservableByTranslationId(translationId: string): Observable<Translation> {
     return this.store.select(TranslationsState.translationById(translationId))
+  }
+
+  onPageChange(page: number) {
+    this.store.dispatch(new ChangePage(page))
+  }
+
+  onPageSizeChange(size: number) {
+    this.store.dispatch(new ChangePageSize(size))
   }
 }

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { Observable } from 'apollo-link';
 import { Select, Store } from '@ngxs/store';
-import { UpdateTranslation, DownloadTranslationsFile } from 'src/app/core/state/translations.state';
+import { DownloadTranslationsFile, ChangeTab } from 'src/app/core/state/translations.state';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
 
 @Component({
@@ -13,7 +13,13 @@ import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu
 })
 export class TranslationsComponent implements OnInit {
 
-  @Select(state => state.translations.translations)
+  @Select(state => state.translations.tabIndex)
+  tabIndex$: Observable<number>;
+
+  @Select(state => state.translations.totalTranslations)
+  totalTranslations$: Observable<Translation[]>;
+
+  @Select(state => state.translations.pagedTranslations)
   translations$: Observable<Translation[]>;
 
   @Select(state => state.translations.sourceLanguage)
@@ -48,6 +54,10 @@ export class TranslationsComponent implements OnInit {
 
   getObjectKeysLength(obj: any) {
     return Object.keys(obj).length;
+  }
+
+  onTabChange(tabIndex: number) {
+    this.store.dispatch(new ChangeTab(tabIndex))
   }
 
 }

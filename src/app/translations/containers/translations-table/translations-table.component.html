@@ -1,5 +1,15 @@
 
-<nz-table #translationsTable nzBordered [nzData]="translations" nzSize="small" [nzPageIndex]>
+<nz-table #translationsTable
+  nzBordered
+  nzSize="small"
+  [nzPageIndex]="pageIndex$ | async"
+  [nzData]="translations"
+  [nzTotal]="total"
+  [nzFrontPagination]="false"
+  [nzShowQuickJumper]="true"
+  [nzShowSizeChanger]="true"
+  (nzPageIndexChange)="onPageChange($event)"
+  (nzPageSizeChange)="onPageSizeChange($event)">
   <thead>
     <tr>
       <th nzWidth="32px"></th>
@@ -25,8 +35,7 @@
         (updateMissingPlaceholders)="updateMissingPlaceholders($event, data.translationId)"
         (updateMissingICUExpressions)="updateMissingICUExpressions($event, data.translationId)"
         (startEdit)="startEdit($event)"
-        (saveEdit)="saveEdit($event)"
-        (undoEdit)="undoEdit($event)"></tr>
+        (saveEdit)="saveEdit($event)"></tr>
     </ng-container>
   </tbody>
 </nz-table>

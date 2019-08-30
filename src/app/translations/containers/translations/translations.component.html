@@ -12,9 +12,16 @@
           <div style="margin-left: 30px; display: inline-block" *ngIf="getObjectKeysLength(invalidTranslationsMap) > 0"><span style="color: red">{{ getObjectKeysLength(invalidTranslationsMap) }}</span> translation(s) are invalid</div>
         </ng-container>
       </nz-page-header-content>
+      <nz-page-header-footer>
+        <nz-tabset [nzSelectedIndex]="tabIndex$ | async" (nzSelectedIndexChange)="onTabChange($event)">
+          <nz-tab nzTitle="All Translations"></nz-tab>
+          <nz-tab nzTitle="Missing Translations"></nz-tab>
+        </nz-tabset>
+      </nz-page-header-footer>
     </nz-page-header>
     <ng-container>
       <app-translations-table
+        [total]="totalTranslations$ | async"
         [translations]="translations$ | async"
         [sourceLanguage]="sourceLanguage$ | async"
         [targetLanguage]="targetLanguage$ | async"

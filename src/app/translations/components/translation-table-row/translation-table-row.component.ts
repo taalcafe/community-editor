@@ -7,6 +7,7 @@ import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-me
 import { Store } from '@ngxs/store';
 import { ParsedMessagePartType } from 'src/app/ngx-lib/impl/parsed-message-part';
 import * as messageformat from 'messageformat-parser';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: '[translationTableRow]',
@@ -49,6 +50,7 @@ export class TranslationTableRowComponent implements OnInit {
 
   ngOnInit() {
     this.translation$
+      .pipe(filter(_ => !!_))
       .subscribe((_: Translation) => {
         this.translationId = _.translationId;
         this.parts = _.parts;
