@@ -1,4 +1,15 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  ViewChild,
+  ElementRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  NgZone
+} from '@angular/core';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as uuid from 'uuid';
@@ -35,6 +46,10 @@ export class TaalEditorComponent implements OnInit {
 
     subject: Subject<any> = new Subject();
 
+    constructor(private ngZone: NgZone) {
+
+    }
+
     ngOnInit() {
         this.rootDomID = uuid.v1();
 
@@ -69,12 +84,12 @@ export class TaalEditorComponent implements OnInit {
                             break;
                         }
 
-                        
+
                     }
                 })
         }
     }
- 
+
     ngOnDestroy(): void {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
@@ -92,17 +107,19 @@ export class TaalEditorComponent implements OnInit {
 
     protected render() {
         if (this.isMounted()) {
+          this.ngZone.runOutsideAngular(() => {
             this.taalEditorInstance = ReactDOM.render(
-                React.createElement(
-                    TaalEditor,
-                    <TaalEditorProps>{
-                        readonly: this.readonly,
-                        setRef: undefined,
-                        onChange: ($event) => this.subject.next($event),
-                        initialValue: { parts: this.parts, icuExpressions: this.icuExpressions }
-                    }),
-                    this.getRootDomNode()
-                );
+              React.createElement(
+                TaalEditor,
+                <TaalEditorProps>{
+                  readonly: this.readonly,
+                  setRef: undefined,
+                  onChange: ($event) => this.subject.next($event),
+                  initialValue: {parts: this.parts, icuExpressions: this.icuExpressions}
+                }),
+              this.getRootDomNode()
+            );
+          });
         }
     }
 }
