@@ -38,7 +38,7 @@ export class DownloadTranslationsFile {
 
 export class ChangePage {
   static readonly type = '[Translations] Change Page';
-  constructor(public pageIndex: number) {}
+  constructor(public page: number) {}
 }
 
 export class ChangePageSize {
@@ -54,7 +54,7 @@ export class ChangeTab {
 // State Model
 export interface TranslationsStateModel {
 
-    pageIndex: number;
+    page: number;
     pageSize: number;
     tabIndex: number;
     totalTranslations: number;
@@ -79,7 +79,7 @@ export interface TranslationsStateModel {
   name: 'translations',
   defaults: {
 
-    pageIndex: 1,
+    page: 1,
     pageSize: 10,
     tabIndex: 0,
     totalTranslations: 0,
@@ -126,7 +126,7 @@ export class TranslationsState {
       patchState({
         totalTranslations: action.translations.length,
         translations: action.translations,
-        pagedTranslations: this.paginate(action.translations, getState().pageSize, 0),
+        pagedTranslations: this.paginate(action.translations, getState().pageSize, 1),
         fileName: action.fileName,
         inputXml: action.xml,
         sourceLanguage: sourceLanguage,
@@ -252,8 +252,8 @@ export class TranslationsState {
     changePage({ getState, patchState }, action: ChangePage) {
       const translations: Translation[] = this.getTabbedTranslations(getState);
       patchState({
-        pageIndex: action.pageIndex,
-        pagedTranslations: this.paginate(translations, getState().pageSize, action.pageIndex),
+        page: action.page,
+        pagedTranslations: this.paginate(translations, getState().pageSize, action.page),
         totalTranslations: translations.length
       })
     }
@@ -264,18 +264,18 @@ export class TranslationsState {
         pageSize: action.pageSize
       })
 
-      dispatch(new ChangePage(0));
+      dispatch(new ChangePage(1));
     }
 
     @Action(ChangeTab)
     changeTab({ patchState, dispatch }, action: ChangeTab) {
       patchState({ tabIndex: action.tabIndex })
 
-      dispatch(new ChangePage(0));
+      dispatch(new ChangePage(1));
     }
 
-    private paginate (array: any[], pageSize: number, pageIndex: number) {
-      return array.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+    private paginate (array: any[], pageSize: number, page: number) {
+      return array.slice((page - 1) * pageSize, page * pageSize);
     }
 
     private getTabbedTranslations(state: any): Translation[] {

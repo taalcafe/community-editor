@@ -29,8 +29,8 @@ export class TranslationsTableComponent implements OnInit {
   @Select(state => state.translations.editMap)
   editMap$: Observable<Map<string, boolean>>;
 
-  @Select(state => state.translations.pageIndex)
-  pageIndex$: Observable<Map<string, boolean>>;
+  @Select(state => state.translations.page)
+  page$: Observable<Map<string, boolean>>;
 
   constructor(private store: Store) { }
 

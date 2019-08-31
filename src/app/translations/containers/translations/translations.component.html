@@ -2,7 +2,7 @@
     <nz-page-header
       (nzBack)="onBack()"
       nzBackIcon
-      [nzTitle]="'Translations (' + (sourceLanguage$ | async) + ' - ' + (targetLanguage$ | async) + ')'">
+      [nzTitle]="titleTemplate">
       <nz-page-header-content>
         <ng-container *ngIf="(missingTranslationsMap$ | async) as missingTranslationsMap">
           <div style="display: inline-block" *ngIf="getObjectKeysLength(missingTranslationsMap) > 0"><span style="color: red">{{ getObjectKeysLength(missingTranslationsMap) }}</span> out of {{ (translationsCount$ | async) }} translations are missing</div>
@@ -32,5 +32,10 @@
         [missingPlaceholdersMap]="missingPlaceholdersMap$ | async"
         [missingICUExpressionsMap]="missingICUExpressionsMap$ | async"></app-translations-table>
     </ng-container>
-    <button class="download-button" nz-button nzType="primary" [nzSize]="'large'" nzShape="round" (click)="download()"><i nz-icon type="download"></i>Download as .xlf</button>
 </div>
+
+
+<ng-template #titleTemplate>
+    Translations ({{(sourceLanguage$ | async)}}-{{(targetLanguage$ | async)}})
+    <button style="margin-left: 20px;" class="download-button" nz-button nzType="primary" [nzSize]="'small'" nzShape="round" (click)="download()"><i nz-icon type="download"></i> Download as .xlf</button>
+</ng-template>

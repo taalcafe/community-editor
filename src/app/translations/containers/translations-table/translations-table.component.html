@@ -2,7 +2,7 @@
 <nz-table #translationsTable
   nzBordered
   nzSize="small"
-  [nzPageIndex]="pageIndex$ | async"
+  [nzPageIndex]="page$ | async"
   [nzData]="translations"
   [nzTotal]="total"
   [nzFrontPagination]="false"
