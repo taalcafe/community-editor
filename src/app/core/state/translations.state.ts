@@ -72,6 +72,11 @@ export interface TranslationsStateModel {
     editMap: Map<string, boolean>;
     missingPlaceholdersMap: Map<string, any[]>;
     missingICUExpressionsMap: Map<string, ITaalIcuMessage[]>;
+
+    downloadFileStatus: string;
+    downloadFilePending: boolean;
+    downloadFileSuccess: boolean;
+    downloadFileError: any;
 }
 
 // State
@@ -97,7 +102,12 @@ export interface TranslationsStateModel {
 
     editMap: new Map(),
     missingPlaceholdersMap: new Map(),
-    missingICUExpressionsMap: new Map()
+    missingICUExpressionsMap: new Map(),
+
+    downloadFileStatus: undefined,
+    downloadFilePending: false,
+    downloadFileSuccess: false,
+    downloadFileError: undefined
   }
 })
 export class TranslationsState {
@@ -231,21 +241,30 @@ export class TranslationsState {
     }
 
     @Action(DownloadTranslationsFile)
-    downloadTranslationsFile({ getState }) {
-      let translations = getState().translations;
-      
-      const file = new TranslationMessagesFileFactory()
-        .createFileFromUnknownFormatFileContent(getState().inputXml, 'nop', 'utf8')
-        .createTranslationFileForLang('bg', 'nop', false, true);
+    downloadTranslationsFile({ getState, patchState }) {
+      patchState({ downloadFileStatus: 'Step 1/3: Aggregating translations', downloadFilePending: true, downloadFileSuccess: false, downloadFileError: undefined })
+      setTimeout(() => {
+        let translations = getState().translations;
+          const file = new TranslationMessagesFileFactory()
+            .createFileFromUnknownFormatFileContent(getState().inputXml, 'nop', 'utf8')
+            .createTranslationFileForLang('bg', 'nop', false, true);
 
-      denormalizeInto(translations, file);
+          patchState({ downloadFileStatus: 'Step 2/3: Denormalizing translations. This might take a while' });
+          setTimeout(() => {
+            denormalizeInto(translations, file);
+            patchState({ downloadFileStatus: 'Step 3/3: Persisting the translations into the file' });
+            setTimeout(() => {
+              const translatedContent = file.editedContent(true);
+              var blob = new Blob([translatedContent], {
+                type: "text/xml;charset=utf-8"
+              });
+              
+              saveAs(blob, getState().fileName);
+              patchState({ downloadFileStatus: 'Completed', downloadFilePending: false, downloadFileSuccess: true, downloadFileError: undefined });
+            }, 2000);
+          }, 1000);
+        }, 1000);
 
-      const translatedContent = file.editedContent(true);
-      var blob = new Blob([translatedContent], {
-        type: "text/xml;charset=utf-8"
-       });
-       
-       saveAs(blob, getState().fileName);
     }
 
     @Action(ChangePage)

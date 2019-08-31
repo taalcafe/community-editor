@@ -14,6 +14,9 @@ import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu
 })
 export class TranslationsTableComponent implements OnInit {
 
+  @Input() pending: boolean;
+  @Input() pendingStatus: string;
+
   @Input() total: number;
   @Input() translations: Translation[];
 

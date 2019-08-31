@@ -21,6 +21,8 @@
     </nz-page-header>
     <ng-container>
       <app-translations-table
+        [pending]="downloadFilePending$ | async"
+        [pendingStatus]="downloadFileStatus$ | async"
         [total]="totalTranslations$ | async"
         [translations]="translations$ | async"
         [sourceLanguage]="sourceLanguage$ | async"
@@ -37,5 +39,10 @@
 
 <ng-template #titleTemplate>
     Translations ({{(sourceLanguage$ | async)}}-{{(targetLanguage$ | async)}})
-    <button style="margin-left: 20px;" class="download-button" nz-button nzType="primary" [nzSize]="'small'" nzShape="round" (click)="download()"><i nz-icon type="download"></i> Download as .xlf</button>
+    <button style="margin-left: 20px;"
+      class="download-button" nz-button nzType="primary"
+      [nzSize]="'small'"
+      nzShape="round"
+      [nzLoading]="downloadFilePending$ | async"
+      (click)="download()"><i nz-icon type="download"></i> Download as .xlf</button>
 </ng-template>

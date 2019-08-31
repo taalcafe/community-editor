@@ -40,6 +40,11 @@ export class TranslationsComponent implements OnInit {
   @Select(state => state.translations.missingICUExpressionsMap)
   missingICUExpressionsMap$: Observable<Map<string, ITaalIcuMessage[]>>;
 
+  @Select(state => state.translations.downloadFileStatus)
+  downloadFileStatus$: Observable<boolean>;
+  @Select(state => state.translations.downloadFilePending)
+  downloadFilePending$: Observable<boolean>;
+
   constructor(private store: Store, private router: Router) { }
 
   ngOnInit() { }
