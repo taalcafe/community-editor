@@ -10,8 +10,10 @@ deploy:
   bucket: taal-cdn
   skip_cleanup: true
   region: eu-west-1
-  upload-dir: oss/test
+  upload-dir: oss/community-editor/test
   local_dir: dist/taalcafe-ui
+  acl: public_read
+  cache_control: "max-age=31536000"
 
 before_script:
   - npm install -g @angular/cli
