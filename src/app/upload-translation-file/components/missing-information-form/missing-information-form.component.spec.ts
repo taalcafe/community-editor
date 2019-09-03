@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MissingInformationFormComponent } from './missing-information-form.component';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('MissingInformationFormComponent', () => {
   let component: MissingInformationFormComponent;
@@ -8,7 +11,8 @@ describe('MissingInformationFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MissingInformationFormComponent ]
+      declarations: [ MissingInformationFormComponent ],
+      imports: [ NgZorroAntdModule, FormsModule, BrowserAnimationsModule ]
     })
     .compileComponents();
   }));

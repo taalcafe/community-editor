@@ -18,6 +18,7 @@ describe('ngx-i18nsupport-lib API test spec', () => {
      * Helper function to read Xliff from File
      */
     function readXliff(path: string): ITranslationMessagesFile {
+        debugger;
         const content = fs.readFileSync(path, ENCODING);
         return TranslationMessagesFileFactory.fromFileContent('xlf', content, path, ENCODING);
     }
