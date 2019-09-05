@@ -15,7 +15,7 @@
       <nz-page-header-footer>
         <nz-tabset [nzSelectedIndex]="tabIndex$ | async" (nzSelectedIndexChange)="onTabChange($event)">
           <nz-tab nzTitle="All Translations"></nz-tab>
-          <nz-tab nzTitle="Missing Translations"></nz-tab>
+          <nz-tab nzTitle="Missing Translations" [nzDisabled]="!(editMapEmpty$ | async)"></nz-tab>
         </nz-tabset>
       </nz-page-header-footer>
     </nz-page-header>
@@ -35,6 +35,7 @@
         [missingICUExpressionsMap]="missingICUExpressionsMap$ | async"></app-translations-table>
     </ng-container>
 </div>
+<div nz-row style="margin-bottom: 40px;"></div>
 
 
 <ng-template #titleTemplate>
@@ -44,5 +45,5 @@
       [nzSize]="'small'"
       nzShape="round"
       [nzLoading]="downloadFilePending$ | async"
-      (click)="download()"><i nz-icon type="download"></i> Download as .xlf</button>
+      (click)="download()"><i nz-icon nzType="download"></i> Download as .xlf</button>
 </ng-template>

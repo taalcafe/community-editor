@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
-import { Observable } from 'apollo-link';
 import { Select, Store } from '@ngxs/store';
 import { DownloadTranslationsFile, ChangeTab } from 'src/app/core/state/translations.state';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
+import { NzMessageService } from 'ng-zorro-antd';
+import { Subject, Observable } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-translations',
@@ -45,9 +47,16 @@ export class TranslationsComponent implements OnInit {
   @Select(state => state.translations.downloadFilePending)
   downloadFilePending$: Observable<boolean>;
 
-  constructor(private store: Store, private router: Router) { }
+  @Select(state => state.translations.editMapEmpty)
+  editMapEmpty$: Observable<boolean>;
 
-  ngOnInit() { }
+  ngUnsubscribe = new Subject<void>();
+
+  constructor(private store: Store, private router: Router, private message: NzMessageService) { }
+
+  ngOnInit() {
+
+  }
 
   onBack() {
     this.router.navigate(['']);

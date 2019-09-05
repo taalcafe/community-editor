@@ -38,7 +38,7 @@ export class TaalEditorComponent implements OnInit {
     @Output() taalEditorChange: EventEmitter<{value: Slate.Value, id: string }> = new EventEmitter();
 
     public rootDomID: string;
-    @ViewChild('taalEditor') el: ElementRef;
+    @ViewChild('taalEditor', { static: true }) el: ElementRef;
 
     taalEditorInstance: TaalEditor;
 

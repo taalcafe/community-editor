@@ -77,6 +77,8 @@ export interface TranslationsStateModel {
     downloadFilePending: boolean;
     downloadFileSuccess: boolean;
     downloadFileError: any;
+
+    editMapEmpty: boolean;
 }
 
 // State
@@ -107,7 +109,9 @@ export interface TranslationsStateModel {
     downloadFileStatus: undefined,
     downloadFilePending: false,
     downloadFileSuccess: false,
-    downloadFileError: undefined
+    downloadFileError: undefined,
+
+    editMapEmpty: true
   }
 })
 export class TranslationsState {
@@ -183,10 +187,13 @@ export class TranslationsState {
     updateEditMap({ getState, patchState }, action: UpdateEditMap) {
 
       const editMap = produce(getState().editMap, (draft: Map<string, boolean>) => {
-        draft.set(action.translationId, action.edit);
+        if (!action.edit) { draft.delete(action.translationId); }
+        else { draft.set(action.translationId, action.edit); }
       })
 
-      patchState({ editMap })
+      const editMapEmpty = getState().editMap.keys().next().done;
+
+      patchState({ editMap, editMapEmpty })
     }
 
     @Action(UpdateMissingPlaceholdersMap)
@@ -278,7 +285,7 @@ export class TranslationsState {
     }
 
     @Action(ChangePageSize)
-    changePageSize({ patchState, dispatch }, action: ChangePageSize) {
+    changePageSize({ getState, patchState, dispatch }, action: ChangePageSize) {
       patchState({
         pageSize: action.pageSize
       })
@@ -287,7 +294,7 @@ export class TranslationsState {
     }
 
     @Action(ChangeTab)
-    changeTab({ patchState, dispatch }, action: ChangeTab) {
+    changeTab({ getState, patchState, dispatch }, action: ChangeTab) {
       patchState({ tabIndex: action.tabIndex })
 
       dispatch(new ChangePage(1));

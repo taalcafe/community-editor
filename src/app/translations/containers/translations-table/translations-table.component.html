@@ -2,16 +2,10 @@
 <nz-table #translationsTable
   nzBordered
   nzSize="small"
-  [nzPageIndex]="page$ | async"
   [nzData]="translations"
-  [nzTotal]="total"
   [nzLoading]="pending"
   [nzLoadingIndicator]="indicatorTemplate"
-  [nzFrontPagination]="false"
-  [nzShowQuickJumper]="true"
-  [nzShowSizeChanger]="true"
-  (nzPageIndexChange)="onPageChange($event)"
-  (nzPageSizeChange)="onPageSizeChange($event)">
+  [nzShowPagination]="false">
   <thead>
     <tr>
       <th nzWidth="32px"></th>
@@ -41,6 +35,17 @@
     </ng-container>
   </tbody>
 </nz-table>
+
+<nz-card>
+  <nz-pagination
+    [nzDisabled]="!(editMapEmpty$ | async)"
+    [nzTotal]="total"
+    [nzPageIndex]="page$ | async"
+    [nzShowQuickJumper]="true"
+    [nzShowSizeChanger]="true"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"></nz-pagination>
+</nz-card>
 
 <ng-template #indicatorTemplate>
   <i nz-icon nzType="loading" style="font-size: 35px;margin-top: 100px;"></i>

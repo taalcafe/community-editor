@@ -47,7 +47,7 @@
       nzType="primary"
       nzGhost
       [disabled]="!edit"
-      (click)="saveEditFn()"><i nz-icon type="check"></i></button>
+      (click)="saveEditFn()"><i nz-icon nzType="check"></i></button>
       <button
       style="display: inline-block; margin-left: 8px;"
       [nzSize]="'small'"
@@ -55,5 +55,5 @@
       nzType="danger"
       nzGhost
       [disabled]="!edit"
-      (click)="undoEditFn()"><i nz-icon type="undo"></i></button>
+      (click)="undoEditFn()"><i nz-icon nzType="undo"></i></button>
   </td>

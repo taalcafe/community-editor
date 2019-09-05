@@ -8,7 +8,7 @@
     [nzDisabled]="pending">
     <nz-spin [nzSpinning]="pending" [nzIndicator]="indicatorTemplate" [nzTip]="state">
     <p class="ant-upload-drag-icon" [ngStyle]="{ 'visibility': pending ? 'hidden' : 'inherit' }">
-      <i nz-icon type="inbox"></i>
+      <i nz-icon nzType="inbox"></i>
     </p>
     <p class="ant-upload-text" [ngStyle]="{ 'visibility': pending ? 'hidden' : 'inherit' }">Click or drag <b>.xliff</b> file to this area to upload</p>
     <p class="ant-upload-hint" [ngStyle]="{ 'visibility': pending ? 'hidden' : 'inherit' }">

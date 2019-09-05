@@ -31,13 +31,16 @@ export class TranslationsTableComponent implements OnInit {
 
   @Select(state => state.translations.editMap)
   editMap$: Observable<Map<string, boolean>>;
+  @Select(state => state.translations.editMapEmpty)
+  editMapEmpty$: Observable<boolean>;
 
   @Select(state => state.translations.page)
   page$: Observable<Map<string, boolean>>;
 
   constructor(private store: Store) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+  }
 
   startEdit(translationId: string): void {
     this.store.dispatch(new UpdateEditMap(translationId, true));
@@ -83,7 +86,7 @@ export class TranslationsTableComponent implements OnInit {
   }
 
   onPageChange(page: number) {
-    this.store.dispatch(new ChangePage(page))
+    return this.store.dispatch(new ChangePage(page));
   }
 
   onPageSizeChange(size: number) {
