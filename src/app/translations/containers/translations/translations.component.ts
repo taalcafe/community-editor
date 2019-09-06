@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { Select, Store } from '@ngxs/store';
@@ -52,8 +52,7 @@ export class TranslationsComponent implements OnInit {
 
   constructor(
     private store: Store,
-    private router: Router,
-    private ref: ChangeDetectorRef) { }
+    private router: Router) { }
 
   ngOnInit() { 
   }
