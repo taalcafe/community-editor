@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private configurations: ConfigurationsService) { }
 
   ngOnInit() {
+  }
+
+  goToGitHub() {
+    window.open(this.configurations.gitHubUrl, '_blank');
   }
 
 }
