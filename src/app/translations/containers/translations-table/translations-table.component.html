@@ -37,7 +37,10 @@
 </nz-table>
 
 <nz-card>
-  <nz-pagination
+  <nz-pagination *ngIf="total"
+    [nzTooltipTitle]="(editMapEmpty$ | async) ? null : 'Please save or undo your ongoing translations before you change the page'"
+    nzTooltipPlacement="top" nz-tooltip
+    [nzOverlayStyle]="{'min-width': '500px'}"
     [nzDisabled]="!(editMapEmpty$ | async)"
     [nzTotal]="total"
     [nzPageIndex]="page$ | async"

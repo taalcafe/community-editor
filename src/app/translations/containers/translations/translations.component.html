@@ -13,8 +13,12 @@
         </ng-container>
       </nz-page-header-content>
       <nz-page-header-footer>
-        <nz-tabset [nzSelectedIndex]="tabIndex$ | async" (nzSelectedIndexChange)="onTabChange($event)">
-          <nz-tab nzTitle="All Translations"></nz-tab>
+        <nz-tabset (nzSelectedIndexChange)="onTabChange($event)"
+          [nzTooltipTitle]="(editMapEmpty$ | async) ? null : 'Please save or undo your ongoing translations before you change the tab'"
+          [nzOverlayStyle]="{'min-width': '500px'}"
+          nzTooltipPlacement="bottom"
+          nz-tooltip>
+          <nz-tab nzTitle="All Translations" [nzDisabled]="!(editMapEmpty$ | async)"></nz-tab>
           <nz-tab nzTitle="Missing Translations" [nzDisabled]="!(editMapEmpty$ | async)"></nz-tab>
         </nz-tabset>
       </nz-page-header-footer>
