@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+  - node
+
+deploy:
+  provider: s3
+  access_key_id: AKIATYNDKXNGODLHQ45L
+  secret_access_key:
+    secure: U/6sE3mo9CiP7vGw8chm393GFOYha8+rp/xA/ESJbCytu+yKuKdfP2LtopAGhBmC8A4FF6Fkot0u5olAswCMs8bWEbj3CFERlOuStKrauWzYkMSS4M30pcAcaTDHpZpyJS8GzXEGKWfAH7FRnmUSbvOMJsnK9K0+0pUtVMlHu9LDnVPWVX0DJY9c1bmO10zGeUSMHGU2tlnlGe6cZXE3sABEADwUykFhPuaC48hAJMvRiO7gN5isTnbbhnFvmMBzWDlRqrEuEElvDFaUZzy7k0IxAc2WnPJGqDG8GeZfQkGhnDg7WJe2oBGiBENew1SsWeqjUkuNyD9ut9X3gRpoEtPR+y9gTIsoVeh7pZ9YAZw10NTh3I0PgUKIXeforTFGo/fWOCXiH5fcJsmZFmmLYi9cXiRmW+kfXtjRjagMxh6zMGi4gsqLUmoPt1trYMwpld9Iowm4bbFdyw4RTlYqtiEfjaxnC75O4K2ibRQpigP+razucwc9HLpP6vXelBqpuqFnbs2yKxDd0cv+meHEzNVOJVp++TKD2SvdswSk3dW+BKupCrOh+7YVa1qUSwfsLm3/znRpLZjylmQivXFKVjX914Ku291rJ6bwX/3KWZDu6/DG+Z8jXA9sJr3jiPS2AgUbpaxOn7sjv68zZjlQ4l/Fg+/JdqUhX1D0l7jsTM4=
+  bucket: taal-cdn
+  skip_cleanup: true
+  region: eu-west-1
+  upload-dir: oss/community-editor/test
+  local_dir: dist/taalcafe-ui
+  acl: public_read
+  cache_control: "max-age=31536000"
+
+before_script:
+  - npm install -g @angular/cli
+
+script:
+  - ng build
