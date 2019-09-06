@@ -14,7 +14,7 @@
       </nz-page-header-content>
       <nz-page-header-footer>
         <nz-tabset (nzSelectedIndexChange)="onTabChange($event)"
-          [nzTooltipTitle]="(editMapEmpty$ | async) ? null : 'Please save or undo your ongoing translations before you change the tab'"
+          [nzTooltipTitle]="!(editMapEmpty$ | async) ? null : 'Please save or undo your ongoing translations before you change the tab'"
           [nzOverlayStyle]="{'min-width': '500px'}"
           nzTooltipPlacement="bottom"
           nz-tooltip>
