@@ -16,7 +16,7 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let data of translationsTable.data; let index = i">
+    <ng-container *ngFor="let data of translations; let index = i">
       <tr translationTableRow
         [edit]="(editMap$ | async)?.get(data.translationId)"
 

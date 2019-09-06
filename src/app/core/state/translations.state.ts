@@ -6,7 +6,7 @@ import { denormalizeInto } from 'src/app/upload-translation-file/handler/denorma
 import ISO6391 from 'iso-639-1';
 import { ITaalMessagePart } from 'src/app/upload-translation-file/models/taal-message-part';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
-import produce from 'immer';
+import { produce } from 'immer';
 import { Tab } from 'src/app/shared/models/tab.enum';
 
 // Actions
@@ -187,19 +187,24 @@ export class TranslationsState {
     updateEditMap({ getState, patchState }, action: UpdateEditMap) {
 
       const editMap = produce(getState().editMap, (draft: Map<string, boolean>) => {
-        if (!action.edit) { draft.delete(action.translationId); }
-        else { draft.set(action.translationId, action.edit); }
+        const newMap = new Map(draft);
+        if (!action.edit) { newMap.delete(action.translationId); }
+        else { newMap.set(action.translationId, action.edit); }
+
+        return newMap;
       })
 
-      const editMapEmpty = getState().editMap.keys().next().done;
+      const editMapEmpty = editMap['keys']().next().done;
 
       patchState({ editMap, editMapEmpty })
     }
 
     @Action(UpdateMissingPlaceholdersMap)
     updateMissingPlaceholdersMap({ getState, patchState }, action: UpdateMissingPlaceholdersMap) {
+
       const missingPlaceholdersMap = produce(getState().missingPlaceholdersMap, (draft: Map<string, any[]>) => {
-        const _ = draft.get(action.translationId);
+        const newMap = new Map(draft);
+        const _ = newMap.get(action.translationId);
         {
           let translation: Translation = getState().pagedTranslations.find(_ => _.translationId === action.translationId);
           let sourcePlaceholders = translation.parts.filter(_ => _.type === 'PLACEHOLDER');
@@ -218,18 +223,20 @@ export class TranslationsState {
             index++;
           }
           
-          draft.set(action.translationId, missingPlaceholders);
+          newMap.set(action.translationId, missingPlaceholders);
+
+          return newMap;
         }
       })
-
+      
       patchState({ missingPlaceholdersMap })
     }
 
     @Action(UpdateMissingICUExpressionsMap)
     updateMissingICUExpressionsMap({ getState, patchState }, action: UpdateMissingICUExpressionsMap) {
-
       const missingICUExpressionsMap = produce(getState().missingICUExpressionsMap, (draft: Map<string, ITaalIcuMessage[]>) => {
-        const _ = draft.get(action.translationId);
+        const newMap = new Map(draft);
+        const _ = newMap.get(action.translationId);
         {
           let translation: Translation = getState().pagedTranslations.find(_ => _.translationId === action.translationId);
           let targetICUExpressions = action.targetParts.filter(_ => _.type === 'ICU_MESSAGE_REF');
@@ -240,7 +247,9 @@ export class TranslationsState {
             })
           })
 
-          draft.set(action.translationId, missingICUExpressions);
+          newMap.set(action.translationId, missingICUExpressions);
+
+          return newMap;
         }
       })
       

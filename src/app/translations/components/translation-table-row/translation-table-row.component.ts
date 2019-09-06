@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { convertFromSlate } from 'taal-editor';
 import { Subject, Observable } from 'rxjs';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
@@ -12,7 +12,8 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: '[translationTableRow]',
   templateUrl: './translation-table-row.component.html',
-  styleUrls: ['./translation-table-row.component.less']
+  styleUrls: ['./translation-table-row.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TranslationTableRowComponent implements OnInit {
 

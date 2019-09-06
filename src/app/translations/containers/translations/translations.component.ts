@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Translation } from 'src/app/upload-translation-file/models/translation';
 import { Select, Store } from '@ngxs/store';
 import { DownloadTranslationsFile, ChangeTab } from 'src/app/core/state/translations.state';
 import { ITaalIcuMessage } from 'src/app/upload-translation-file/models/taal-icu-message';
-import { NzMessageService } from 'ng-zorro-antd';
 import { Subject, Observable } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-translations',
@@ -52,10 +50,12 @@ export class TranslationsComponent implements OnInit {
 
   ngUnsubscribe = new Subject<void>();
 
-  constructor(private store: Store, private router: Router, private message: NzMessageService) { }
+  constructor(
+    private store: Store,
+    private router: Router,
+    private ref: ChangeDetectorRef) { }
 
-  ngOnInit() {
-
+  ngOnInit() { 
   }
 
   onBack() {

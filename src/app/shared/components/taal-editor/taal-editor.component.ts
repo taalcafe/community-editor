@@ -55,7 +55,7 @@ export class TaalEditorComponent implements OnInit {
 
         this.subject.asObservable()
             .pipe(
-                debounceTime(500),
+                debounceTime(100),
                 takeUntil(this.ngUnsubscribe)
             )
             .subscribe(_ => {
