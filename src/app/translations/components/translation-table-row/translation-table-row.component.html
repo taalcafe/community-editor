@@ -44,16 +44,14 @@
       style="display: inline-block;"
       [nzSize]="'small'"
       nz-button
-      nzType="primary"
-      nzGhost
+      nzType="primary" nzGhost
       [disabled]="!edit"
       (click)="saveEditFn()"><i nz-icon nzType="check"></i></button>
-      <button
+    <button
       style="display: inline-block; margin-left: 8px;"
       [nzSize]="'small'"
       nz-button
-      nzType="danger"
-      nzGhost
+      nzType="primary" nzGhost
       [disabled]="!edit"
       (click)="undoEditFn()"><i nz-icon nzType="undo"></i></button>
   </td>
