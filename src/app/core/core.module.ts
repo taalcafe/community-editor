@@ -38,6 +38,7 @@ import { TranslationFileLoadedGuard } from '../shared/guards/translation-file-lo
 
           { path: 'translation-files/upload', loadChildren: '../upload-translation-file/upload-translation-file.module#UploadTranslationFileModule' },
           { path: 'translations', loadChildren: '../translations/translations.module#TranslationsModule', canActivate: [TranslationFileLoadedGuard] },
+          { path: 'privacy-policy', loadChildren: '../privacy-policy/privacy-policy.module#PrivacyPolicyModule' }
         ]
       },
 
