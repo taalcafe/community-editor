@@ -12,6 +12,7 @@ import { SharedModule } from '../shared/shared.module';
 import { NgxsModule } from '@ngxs/store';
 import { TranslationsState } from './state/translations.state';
 import { TranslationFileLoadedGuard } from '../shared/guards/translation-file-loaded.guard';
+import { FooterComponent } from './containers/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TranslationFileLoadedGuard } from '../shared/guards/translation-file-lo
     LoadingBarComponent,
     ErrorUnauthenticatedComponent,
     ErrorUnauthorizedComponent,
-    ErrorNotFoundComponent
+    ErrorNotFoundComponent,
+    FooterComponent
   ],
   imports: [
     NgZorroAntdModule,
