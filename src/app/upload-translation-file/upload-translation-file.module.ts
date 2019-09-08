@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { UploadTranslationFileComponent } from './containers/upload-translation-file/upload-translation-file.component';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { SharedModule } from '../shared/shared.module';
@@ -14,15 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NgZorroAntdModule,
     SharedModule,
     FormsModule,
-    ReactiveFormsModule,
-
-    RouterModule.forChild([
-      {
-        path: '',
-        component: UploadTranslationFileComponent,
-        children: [ ]
-      }
-    ])
-  ]
+    ReactiveFormsModule
+  ],
+  exports: [UploadTranslationFileComponent]
 })
 export class UploadTranslationFileModule { }

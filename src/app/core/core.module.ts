@@ -34,9 +34,7 @@ import { TranslationFileLoadedGuard } from '../shared/guards/translation-file-lo
         path: '',
         component: LayoutComponent,
         children: [
-          { path: '', redirectTo: 'translation-files/upload', pathMatch: 'full' },
-
-          { path: 'translation-files/upload', loadChildren: '../upload-translation-file/upload-translation-file.module#UploadTranslationFileModule' },
+          { path: '', loadChildren: '../landing/landing.module#LandingModule' },
           { path: 'translations', loadChildren: '../translations/translations.module#TranslationsModule', canActivate: [TranslationFileLoadedGuard] },
           { path: 'privacy-policy', loadChildren: '../privacy-policy/privacy-policy.module#PrivacyPolicyModule' }
         ]
