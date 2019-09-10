@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UploadXHRArgs } from 'ng-zorro-antd';
-import { TranslationMessagesFileFactory, FORMAT_XLIFF20, ITransUnit, FORMAT_XLIFF12 } from 'src/app/ngx-lib/api';
+import { TranslationMessagesFileFactory, FORMAT_XLIFF20, ITransUnit, FORMAT_XLIFF12, FORMAT_XMB } from 'src/app/ngx-lib/api';
 import { normalize } from '../../handler/normalizer';
 import { Store } from '@ngxs/store';
 import { LoadTranslations } from 'src/app/core/state/translations.state';
@@ -51,13 +51,26 @@ export class UploadTranslationFileComponent implements OnInit {
 
       const factory = new TranslationMessagesFileFactory();
       const content = <string>fileReader.result;
+      const format = item.file.name.endsWith('.xmb') ? FORMAT_XMB : FORMAT_XLIFF20;
+      let file;
+      try {
+        file = factory.createFileFromFileContent(
+          format,
+          content,
+          item.file.name,
+          'utf8'
+        );
+      } catch(e) {
 
-      const file = factory.createFileFromFileContent(
-        FORMAT_XLIFF12,
-        content,
-        item.file.name,
-        'utf8'
-      );
+        if (!e.message.endsWith('version should be 2.0, found 1.2')) throw(e);
+        
+        file = factory.createFileFromFileContent(
+          FORMAT_XLIFF12,
+          content,
+          item.file.name,
+          'utf8'
+        );
+      }
 
       const transUnits: ITransUnit[] = [];
       file.forEachTransUnit(tu => transUnits.push(tu));
