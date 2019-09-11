@@ -260,7 +260,7 @@ export class TranslationsState {
     downloadTranslationsFile({ getState, patchState }) {
       patchState({ downloadFileStatus: 'Step 1/3: Aggregating translations', downloadFilePending: true, downloadFileSuccess: false, downloadFileError: undefined })
       setTimeout(() => {
-        let translations = getState().translations;
+          const translations = new Array(...getState().translations);
           const file = new TranslationMessagesFileFactory()
             .createFileFromUnknownFormatFileContent(getState().inputXml, 'nop', 'utf8')
             .createTranslationFileForLang('bg', 'nop', false, true);
