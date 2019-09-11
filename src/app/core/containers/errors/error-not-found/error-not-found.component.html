@@ -1,44 +1,12 @@
-.error {
-    display: flex;
-    align-items: center;
-    margin-top: 128px;
-}
-
-.error-image-block {
-    flex: 0 0 62.5%;
-    width: 62.5%;
-    padding-right: 152px;
-    zoom: 1;
-}
-
-.error-image {
-    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/KpnpchXsobRgLElEozzI.svg');
-
-    float: right;
-    width: 100%;
-    max-width: 430px;
-    height: 360px;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: 100% 100%;
-}
-
-.error-content {
-    flex: auto;
-}
-
-.error-content-title {
-    margin-bottom: 24px;
-    color: #434e59;
-    font-weight: 600;
-    font-size: 72px;
-    line-height: 72px;
-}
-
-.error-content-description {
-    margin-bottom: 16px;
-    color: rgba(0,0,0,.45);
-    font-size: 20px;
-    line-height: 28px;
-}
-
+<div class="error">
+  <div class="error-image-block">
+    <div class="error-image"></div>
+  </div>
+  <div class="error-content">
+    <h1 class="error-content-title">404</h1>
+    <div class="error-content-description">Sorry, the page you visited does not exist.</div>
+    <div class="error-content-actions">
+      <button nz-button nzType="primary" routerLink="/">Back to Home</button>
+    </div>
+  </div>
+</div>
