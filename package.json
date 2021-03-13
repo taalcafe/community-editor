@@ -51,7 +51,7 @@
     "tokenizr": "^1.5.4",
     "tslib": "^1.10.0",
     "uuid": "^3.3.3",
-    "xmldom": "^0.1.27",
+    "xmldom": "^0.5.0",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
